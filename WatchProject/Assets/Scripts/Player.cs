@@ -1,26 +1,19 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class Player : MonoBehaviour {
+public class Player : GameSystem {
 
     public enum BounceSide { left, right, top, down };
 
 
+    public Vector2 gravity;
     public Vector2 velocity;
     public Arrow   arrow;
 
-    private Game.UpdateMethod updateMethod;
-    private Dictionary<Game.State, Game.UpdateMethod> stateToMethod = new Dictionary<Game.State, Game.UpdateMethod>();
-
-
 
     void Start () {
-        stateToMethod.Add(Game.Start, OnStart);
-    }
-
-
-    void Update () {
-        stateToMethod[Game.instance.state]();
+        stateToMethod.Add(Game.State.start, OnStart);
     }
 
 

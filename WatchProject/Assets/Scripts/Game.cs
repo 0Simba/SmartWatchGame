@@ -1,32 +1,47 @@
 using UnityEngine;
 using System.Collections;
 
-public class Game : MonoBehaviour {
+public class Game : GameSystem {
 
     public delegate void UpdateMethod ();
+    public delegate void StateChanged (State state);
+
+    static public Game  instance;
+    static public event StateChanged OnStateChanged;
+
+    public enum State { start, direction, power, movement, pause, onCheckpoint, onObjectif, die, win };
 
 
-    static public Game instance;
-    enum State { start, direction, power, movement, pause, onCheckpoint, onObjectif, die, win };
 
 
-    public State state = State.start;
+    public Game.State state;
 
 
     void Start ()
     {
         instance = this;
+        state    = State.direction;
     }
 
 
-    void Update ()
+    public override void OnDirection ()
     {
-
+        if (PlayerTap()) {
+            ChangeState(Game.State.power);
+        }
     }
 
 
-    void OnTap ()
-    {
+    void ChangeState (Game.State state) {
+        this.state = state;
 
+        if (Game.OnStateChanged != null) {
+            Game.OnStateChanged(state);
+        }
+    }
+
+
+    bool PlayerTap () {
+        return (Input.GetTouch(0).phase == TouchPhase.Began || Input.GetMouseButtonDown(0));
     }
 }
