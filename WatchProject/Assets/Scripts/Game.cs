@@ -26,8 +26,26 @@ public class Game : GameSystem {
 
     public override void OnDirection ()
     {
-        if (PlayerTap()) {
+        if (PlayerTap())
+        {
             ChangeState(Game.State.power);
+        }
+    }
+
+
+    public override void OnPower ()
+    {
+        if (PlayerTap())
+        {
+            ChangeState(Game.State.movement);
+        }
+    }
+
+
+    public override void OnMovement () {
+        if (PlayerTap())
+        {
+            ChangeState(Game.State.direction);
         }
     }
 
@@ -42,6 +60,6 @@ public class Game : GameSystem {
 
 
     bool PlayerTap () {
-        return (Input.GetTouch(0).phase == TouchPhase.Began || Input.GetMouseButtonDown(0));
+        return (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began || Input.GetMouseButtonDown(0));
     }
 }
