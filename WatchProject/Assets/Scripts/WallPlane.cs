@@ -13,6 +13,13 @@ public class WallPlane : MonoBehaviour {
         }
 
         Player player = other.GetComponent<Player>();
+
+
+        if (player.alreadyCollide) {
+            return;
+        }
+        player.alreadyCollide = true;
+
         player.Bounce(bounceSide);
 
         if (bounceSide == Player.BounceSide.down) {

@@ -21,6 +21,7 @@ public class Player : GameSystem {
     public  float     maxPower       = 1;
     public  float     velocityToStop = 1; 
     public  bool      onFloor        = false;
+    public  bool      alreadyCollide = false;
 
     public  Aim     aim;
 
@@ -47,6 +48,8 @@ public class Player : GameSystem {
         if (!onFloor) {
             velocity += gravity;            
         }
+
+        alreadyCollide = false;
 
 
         velocity *= Mathf.Exp(-friction * Time.deltaTime);
