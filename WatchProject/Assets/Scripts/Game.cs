@@ -26,8 +26,7 @@ public class Game : GameSystem {
 
     public override void OnDirection ()
     {
-        if (PlayerTap())
-        {
+        if (PlayerTap()) {
             ChangeState(Game.State.power);
         }
     }
@@ -35,16 +34,14 @@ public class Game : GameSystem {
 
     public override void OnPower ()
     {
-        if (PlayerTap())
-        {
+        if (PlayerTap()) {
             ChangeState(Game.State.movement);
         }
     }
 
 
     public override void OnMovement () {
-        if (PlayerTap())
-        {
+        if (PlayerTap()) {
             ChangeState(Game.State.direction);
         }
     }
