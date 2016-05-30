@@ -3,6 +3,9 @@ using System.Collections;
 
 public class Aim : GameSystem {
 
+    [HideInInspector] public float ratioPower = 0;
+    [HideInInspector] public float angle      = 0;
+
     public  Transform pivot;
     public  Transform arrow;
     public  Transform scale;
@@ -10,8 +13,6 @@ public class Aim : GameSystem {
     public  float     minScale         = 1;
     public  float     maxScale         = 2;
     public  float     growFrequency    = 3;
-    public  float     minPower         = 1;
-    public  float     maxPower         = 10;
     private float     powerElapsedTime = 0;
     private float     scaleDifference;
 
@@ -19,30 +20,35 @@ public class Aim : GameSystem {
     void Start () {
         scaleDifference = maxScale - minScale;
 
-        Game.OnStateChanged += OnStateChanged;
+        Game.OnThrow          += Deactivate;
+        Game.OnDirectionStart += Activate;
     }
 
 
-    public void OnStateChanged (Game.State state) {
-        if (state == Game.State.movement) {
-            pivot.gameObject.SetActive(false);
-        }
-        else if (state == Game.State.direction) {
-            pivot.gameObject.SetActive(true);
-        }
+    void Deactivate () {
+        pivot.gameObject.SetActive(false);
+    }
+
+
+    void Activate () {
+        pivot.gameObject.SetActive(true);
     }
 
 
     override public void OnDirection () {
         pivot.Rotate(pivot.forward * anglePerSeconds * Time.deltaTime);
+
+        angle = (pivot.eulerAngles.z) * Mathf.Deg2Rad;
     }
 
 
     override public void OnPower () {
         powerElapsedTime += Time.deltaTime;
 
-        float power = Mathf.Sin(powerElapsedTime * Mathf.PI * 2 * growFrequency) * (scaleDifference / 2) + minPower + scaleDifference / 2;
+        ratioPower = (Mathf.Sin(powerElapsedTime * Mathf.PI * 2 * growFrequency) + 1) / 2;
 
-        scale.localScale = Vector3.one * power;
+        float scaleRatio = minScale + scaleDifference * ratioPower;
+
+        scale.localScale = Vector3.one * scaleRatio;
     }
 }
