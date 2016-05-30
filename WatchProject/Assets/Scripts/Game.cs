@@ -17,23 +17,20 @@ public class Game : GameSystem {
     public Game.State state;
 
 
-    void Start ()
-    {
+    void Start () {
         instance = this;
         state    = State.direction;
     }
 
 
-    public override void OnDirection ()
-    {
+    public override void OnDirection () {
         if (PlayerTap()) {
             ChangeState(Game.State.power);
         }
     }
 
 
-    public override void OnPower ()
-    {
+    public override void OnPower () {
         if (PlayerTap()) {
             ChangeState(Game.State.movement);
         }

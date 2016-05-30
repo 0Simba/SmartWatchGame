@@ -18,6 +18,18 @@ public class Aim : GameSystem {
 
     void Start () {
         scaleDifference = maxScale - minScale;
+
+        Game.OnStateChanged += OnStateChanged;
+    }
+
+
+    public void OnStateChanged (Game.State state) {
+        if (state == Game.State.movement) {
+            pivot.gameObject.SetActive(false);
+        }
+        else if (state == Game.State.direction) {
+            pivot.gameObject.SetActive(true);
+        }
     }
 
 
