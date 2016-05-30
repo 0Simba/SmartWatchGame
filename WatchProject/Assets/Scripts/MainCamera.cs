@@ -10,9 +10,17 @@ public class MainCamera : MonoBehaviour {
     ==============================*/
 
     public  Transform target;
+    public  float     maxSpeed        = 1f;
+    public  float     moveSpeedCoef   = 4f;
+    public  float     lookAtSpeedCoef = 4f;
 
     public  HotZone  firstHotZone;
     public  Vector3  normalOffset;
+
+
+    private Vector3  hopePosition;
+    private Vector3  lookPosition;
+    private Vector3  lastLookAtPosition;
 
     public void Start () {
         GetHotZones();
@@ -24,8 +32,18 @@ public class MainCamera : MonoBehaviour {
     ==============================*/
 
     public void Update () {
-        transform.position = target.position + normalOffset;
+        hopePosition = target.position + normalOffset;
         CheckHotZones();
+        Move();
+    }
+
+
+    public void Move () {
+        Vector3 deccelerateNextPosition = Vector3.Lerp(transform.position, hopePosition, moveSpeedCoef * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, deccelerateNextPosition, maxSpeed * Time.deltaTime);
+
+        lastLookAtPosition = Vector3.Lerp(lastLookAtPosition, lookPosition, lookAtSpeedCoef * Time.deltaTime);
+        transform.LookAt(lastLookAtPosition);
     }
 
 
@@ -88,9 +106,8 @@ public class MainCamera : MonoBehaviour {
         }
 
 
-        transform.position = Vector3.Lerp(transform.position, hotZone.cameraPosition.position, ratio);
-        transform.LookAt(Vector3.Lerp(target.position, hotZone.cameraLookAt.position, ratio));
-
+        hopePosition = Vector3.Lerp(hopePosition, hotZone.cameraPosition.position, ratio);
+        lookPosition = Vector3.Lerp(target.position, hotZone.cameraLookAt.position, ratio);
     }
 
 }
