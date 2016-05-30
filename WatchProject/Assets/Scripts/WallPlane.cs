@@ -20,7 +20,7 @@ public class WallPlane : MonoBehaviour {
         }
         player.alreadyCollide = true;
 
-        player.Bounce(bounceSide);
+        player.Bounce(bounceSide, restitution);
 
         if (bounceSide == Player.BounceSide.down) {
             player.onFloor = true;

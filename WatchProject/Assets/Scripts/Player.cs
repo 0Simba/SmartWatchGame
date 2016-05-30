@@ -61,7 +61,7 @@ public class Player : GameSystem {
     }
 
 
-    public void Bounce (BounceSide bounceSide) {
+    public void Bounce (BounceSide bounceSide, float wallRestitution) {
         if (bounceSide == BounceSide.left || bounceSide == BounceSide.right) {
             velocity.x *= -1;
         }
@@ -70,7 +70,7 @@ public class Player : GameSystem {
         }
 
 
-        velocity *= bounceRestitution;
+        velocity *= bounceRestitution * wallRestitution;
     }
 
 
