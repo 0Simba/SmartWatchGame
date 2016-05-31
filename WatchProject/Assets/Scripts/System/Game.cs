@@ -21,7 +21,12 @@ public class Game : GameSystem {
 
     void Start () {
         instance = this;
-        state    = State.direction;
+        state    = State.start;
+    }
+
+
+    public void Launch () {
+        EndMovement(); // quick hack
     }
 
 
