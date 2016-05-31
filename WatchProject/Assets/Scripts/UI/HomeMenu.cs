@@ -59,8 +59,11 @@ public class HomeMenu : MonoBehaviour {
         Text _OptionText = bOption.GetChild(0).GetComponent<Text>();
 
         _playText.enabled = false;
+        bPlay.GetComponent<Button>().interactable = false;
         _ExitText.enabled = false;
+        bExit.GetComponent<Button>().interactable = false;
         _OptionText.enabled = false;
+        bOption.GetComponent<Button>().interactable = false;
 
         _bOptionRect.localScale = new Vector3(0, 0, 0);
 
@@ -96,7 +99,10 @@ public class HomeMenu : MonoBehaviour {
         // END ANIMATION
 
         _playText.enabled = true;
+        bPlay.GetComponent<Button>().interactable = true;
         _ExitText.enabled = true;
+        bExit.GetComponent<Button>().interactable = true;
         _OptionText.enabled = true;
+        bOption.GetComponent<Button>().interactable = true;
     }
 }
