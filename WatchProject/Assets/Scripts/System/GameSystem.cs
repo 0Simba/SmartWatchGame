@@ -22,6 +22,10 @@ public abstract class GameSystem : MonoBehaviour {
 
 
     public void Update () {
+        if (!stateToMethod.ContainsKey(Game.instance.state)) {
+            Debug.LogError("No state " + Game.instance.state + " : " + gameObject.name);
+
+        }
         stateToMethod[Game.instance.state]();
     }
 
