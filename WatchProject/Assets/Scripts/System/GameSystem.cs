@@ -16,7 +16,7 @@ public abstract class GameSystem : MonoBehaviour {
         stateToMethod.Add(Game.State.pause,        OnPause);
         stateToMethod.Add(Game.State.onCheckpoint, OnCheckpoint);
         stateToMethod.Add(Game.State.onObjectif,   OnObjectif);
-        stateToMethod.Add(Game.State.die,          OnDie);
+        stateToMethod.Add(Game.State.lose,         OnLose);
         stateToMethod.Add(Game.State.win,          OnWin);
     }
 
@@ -33,6 +33,6 @@ public abstract class GameSystem : MonoBehaviour {
     public virtual void OnPause      () {}
     public virtual void OnCheckpoint () {}
     public virtual void OnObjectif   () {}
-    public virtual void OnDie        () {}
+    public virtual void OnLose       () {}
     public virtual void OnWin        () {}
 }

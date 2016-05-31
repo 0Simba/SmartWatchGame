@@ -8,11 +8,12 @@ public class Game : GameSystem {
     public delegate void SimpleAction ();
 
     static public Game  instance;
-    static public event StateChanged OnStateChanged;
     static public event SimpleAction OnThrow;
     static public event SimpleAction OnDirectionStart;
+    static public event SimpleAction OnLose;
+    static public event SimpleAction OnWin;
 
-    public enum State { start, direction, power, movement, pause, onCheckpoint, onObjectif, die, win };
+    public enum State { start, direction, power, movement, pause, onCheckpoint, onObjectif, lose, win };
 
 
     public Game.State state;
@@ -40,24 +41,34 @@ public class Game : GameSystem {
 
 
     public override void OnMovement () {
-        if (PlayerTap()) {
-            EndMovement();
-        }
     }
 
 
     public void EndMovement () {
-        ChangeState(Game.State.direction);
-        OnDirectionStart();
+        if (Level.instance.restThrow <= 0) {
+            Lose();
+        }
+        else {
+            ChangeState(Game.State.direction);
+            OnDirectionStart();
+        }
     }
 
 
     void ChangeState (Game.State state) {
         this.state = state;
+    }
 
-        if (Game.OnStateChanged != null) {
-            Game.OnStateChanged(state);
-        }
+
+    void Lose () {
+        OnLose();
+        ChangeState(State.lose);
+    }
+
+
+    void Win () {
+        OnWin();
+        ChangeState(State.win);
     }
 
 

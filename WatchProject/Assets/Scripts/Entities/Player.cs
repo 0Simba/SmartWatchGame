@@ -69,6 +69,9 @@ public class Player : GameSystem {
             velocity.y *= -1;
         }
 
+        if (bounceSide == Player.BounceSide.down) {
+            onFloor = true;
+        }
 
         velocity *= bounceRestitution * wallRestitution;
     }
