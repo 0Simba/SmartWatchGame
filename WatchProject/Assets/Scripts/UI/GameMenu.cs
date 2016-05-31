@@ -13,6 +13,9 @@ public class GameMenu : MonoBehaviour {
 
     [Header("Pause Params")]
     public GameObject pausePannel;
+    public GameObject bExit;
+    public GameObject bRestart;
+    public float timeToAppear; 
 
     void Update () {
         if(PlayerDoubleTouch())
@@ -38,14 +41,16 @@ public class GameMenu : MonoBehaviour {
     void HidePause()
     {
         _inPause = false;
-        pausePannel.SetActive(false);
+        Time.timeScale = 1;
+        StartCoroutine(MenuAnimation(false));
     }
 
     void ShowPause()
     {
         HideHUD();
         _inPause = true;
-        pausePannel.SetActive(true);
+        Time.timeScale = 0;
+        StartCoroutine(MenuAnimation(true));
     }
 
     bool PlayerDoubleTouch()
@@ -62,5 +67,44 @@ public class GameMenu : MonoBehaviour {
     public void OnExitClick()
     {
         Application.LoadLevel("Menu");
+    }
+
+    IEnumerator MenuAnimation(bool side)
+    {
+        float timer = 0;
+        RectTransform tExit = bExit.GetComponent<RectTransform>();
+        RectTransform tRestart = bRestart.GetComponent<RectTransform>();
+
+        bExit.GetComponent<Button>().interactable = false;
+        bRestart.GetComponent<Button>().interactable = false;
+
+        while (timer <= timeToAppear)
+        {
+            if (side)
+            {
+                tRestart.localPosition = Vector3.Lerp(new Vector3(0, 320, 0), new Vector3(0, 160, 0), timer / timeToAppear);
+                tExit.localPosition = Vector3.Lerp(new Vector3(0, -320, 0), new Vector3(0, -160, 0), timer / timeToAppear);
+            }
+            else
+            {
+                tRestart.localPosition = Vector3.Lerp(new Vector3(0, 160, 0), new Vector3(0, 320, 0), timer / timeToAppear);
+                tExit.localPosition = Vector3.Lerp(new Vector3(0, -160, 0), new Vector3(0, -320, 0), timer / timeToAppear);
+            }
+            timer += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        if (side)
+        {
+            tRestart.localPosition =  new Vector3(0, 160, 0);
+            tExit.localPosition = new Vector3(0, -160, 0);
+        }
+        else
+        {
+            tRestart.localPosition = new Vector3(0, 320, 0);
+            tExit.localPosition = new Vector3(0, -320, 0);
+        }
+        pausePannel.SetActive(side);
+        bExit.GetComponent<Button>().interactable = side;
+        bRestart.GetComponent<Button>().interactable = side;
     }
 }
