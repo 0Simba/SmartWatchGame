@@ -37,7 +37,7 @@ public class Level : MonoBehaviour {
 
 
     private void OnThrow () {
-        maxThrow--;
+        restThrow--;
     }
 
 }
