@@ -12,6 +12,8 @@ public class Player : GameSystem {
 
 
     private Vector3 velocity;
+    private float   frameVelocityAppliedRatio = 0;
+    private Vector3 ballExtremity;
 
     public  LayerMask collideMask;
     public  Vector3   gravity;
@@ -45,20 +47,46 @@ public class Player : GameSystem {
 
 
     override public void OnMovement () {
-        if (!onFloor) {
-            velocity += gravity;            
-        }
-
+        ballExtremity  = transform.position + transform.localScale.x * velocity.normalized * 0.5f;
+        onFloor        = false;
         alreadyCollide = false;
+        velocity       *= Mathf.Exp(-friction * Time.deltaTime);
+
+        CheckCollision();
+        ApplyMovement();
+        CheckIsEndMovement();
+    }
 
 
-        velocity *= Mathf.Exp(-friction * Time.deltaTime);
-        transform.position += velocity * Time.deltaTime;
-
+    void CheckIsEndMovement () {
         if (velocityToStop >= velocity.magnitude && onFloor) {
             Game.instance.EndMovement();
         }
     }
+
+
+    void ApplyMovement () {
+        if (!onFloor) {
+            velocity += gravity;            
+        }
+
+        transform.position += velocity * Time.deltaTime * (1 - frameVelocityAppliedRatio);
+    }
+
+
+    void CheckCollision () {
+        RaycastHit hitInfo;
+        if (Physics.Raycast(ballExtremity, velocity, out hitInfo, velocity.magnitude * Time.deltaTime, collideMask)) {
+            WallPlane wallPlane = hitInfo.collider.gameObject.GetComponent<WallPlane>();
+            Bounce(wallPlane.bounceSide, wallPlane.restitution);
+
+            Vector3 distance          = hitInfo.point - ballExtremity;
+            transform.position        -= distance;
+            //frameVelocityAppliedRatio = 1;
+            //frameVelocityAppliedRatio = distance.magnitude / (velocity.magnitude * Time.deltaTime);
+        }
+    }
+
 
 
     public void Bounce (BounceSide bounceSide, float wallRestitution) {
@@ -69,7 +97,9 @@ public class Player : GameSystem {
             velocity.y *= -1;
         }
 
-
+        if (bounceSide == BounceSide.down) {
+            onFloor = true;
+        }
         velocity *= bounceRestitution * wallRestitution;
     }
 

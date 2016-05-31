@@ -7,6 +7,7 @@ public class WallPlane : MonoBehaviour {
     public float             restitution;
     public Player.BounceSide bounceSide;
 
+/*
     void OnTriggerEnter (Collider other) {
         if (other.tag != "Player") {
             return;
@@ -26,8 +27,9 @@ public class WallPlane : MonoBehaviour {
             player.onFloor = true;
         }
     }
+*/
 
-
+/*
     void OnTriggerExit (Collider other) {
         if (other.tag != "Player") {
             return;
@@ -39,7 +41,7 @@ public class WallPlane : MonoBehaviour {
             player.onFloor = false;
         }
     }
-
+*/
 
 
 
