@@ -55,19 +55,28 @@ public class Game : GameSystem {
     }
 
 
+    public void ObjectifPicked () {
+        Win();
+    }
+
+
     void ChangeState (Game.State state) {
         this.state = state;
     }
 
 
     void Lose () {
-        OnLose();
+        if (OnLose != null) {
+            OnLose();
+        } 
         ChangeState(State.lose);
     }
 
 
     void Win () {
-        OnWin();
+        if (OnWin != null) {
+            OnWin();
+        } 
         ChangeState(State.win);
     }
 
