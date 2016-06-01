@@ -29,7 +29,7 @@ public class StartManager : GameSystem {
         Quaternion rotation    = Quaternion.Euler(smoothRatio * 720, smoothRatio * 360, smoothRatio * 1080);
 
         for (int i = 0; i < walls.Length; ++i) {
-            walls[i].transform.position = finalPosition[i] + (1 - smoothRatio) * new Vector3(i % 5 - 2, i % 20, 1);
+            walls[i].transform.position = finalPosition[i] + (1 - smoothRatio) * new Vector3(i % 5 - 2, i % 20, i % 20);
             walls[i].transform.rotation = rotation;
         }
 
