@@ -5,16 +5,19 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 
 [System.Serializable]
-public struct LevelDescription {
+public class LevelDescription {
     public string name;
     public string levelName;
     public Sprite image;
+    [HideInInspector]
+    public RectTransform reference;
 }
 
 public class LevelMenu : MonoBehaviour {
     private int _currIndex;
     private RectTransform _tContainer;
     private Vector3 _scrollStart;
+    private Vector3 _center;
 
     public ScrollRect scrollRect;
     public GameObject prefabLevelSelectorButton;
@@ -40,6 +43,7 @@ public class LevelMenu : MonoBehaviour {
             nButton.GetComponent<LevelIconSelector>().levelName = levels[i].levelName;
             nButton.GetComponent<Button>().onClick.AddListener(OnClickLevel);
             nButton.transform.SetParent(container.transform, false);
+            levels[i].reference = nButton.GetComponent<RectTransform>();
         }
     }
 
@@ -50,6 +54,7 @@ public class LevelMenu : MonoBehaviour {
 
     public void OnEndDrag()
     {
+        //_tContainer.localPosition = _center;
     }
 
     public void OnScroll()
@@ -60,7 +65,7 @@ public class LevelMenu : MonoBehaviour {
             if ((_currIndex + 1) < levels.Count)
             {
                 _currIndex++;
-                scrollRect.verticalNormalizedPosition = Mathf.Lerp(0, 1, _currIndex / levels.Count);
+                _center = -levels[_currIndex].reference.localPosition;
             }
         }
         if (totalScrolled.y < -80)
@@ -68,7 +73,7 @@ public class LevelMenu : MonoBehaviour {
             if (_currIndex-1 > 0)
             {
                 _currIndex--;
-                scrollRect.verticalNormalizedPosition = Mathf.Lerp(0, 1, _currIndex / levels.Count);
+                _center = -levels[_currIndex].reference.localPosition;
             }
         }
     }
