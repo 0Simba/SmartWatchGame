@@ -32,7 +32,8 @@ public class MainCamera : MonoBehaviour {
     ==============================*/
 
     public void Update () {
-        hopePosition = target.position + normalOffset;
+        hopePosition   = target.position + normalOffset;
+        lookPosition   = target.position;
         CheckHotZones();
         Move();
     }
@@ -107,7 +108,7 @@ public class MainCamera : MonoBehaviour {
 
 
         hopePosition = Vector3.Lerp(hopePosition, hotZone.cameraPosition.position, ratio);
-        lookPosition = Vector3.Lerp(target.position, hotZone.cameraLookAt.position, ratio);
+        lookPosition = Vector3.Lerp(lookPosition, hotZone.cameraLookAt.position, ratio);
     }
 
 }

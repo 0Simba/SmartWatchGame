@@ -15,16 +15,17 @@ public class Player : GameSystem {
     private float   frameVelocityAppliedRatio = 0;
     private Vector3 ballExtremity;
 
-    public  LayerMask   collideMask;
-    public  Vector3     gravity;
-    public  float       friction;
-    public  float       bounceRestitution;
-    public  float       minPower       = 0.1f;
-    public  float       maxPower       = 1;
-    public  float       velocityToStop = 1; 
-    public  bool        onFloor        = false;
-    public  bool        alreadyCollide = false;
-    public  BounceScale bounceScale;
+    public  LayerMask      collideMask;
+    public  Vector3        gravity;
+    public  float          friction;
+    public  float          bounceRestitution;
+    public  float          minPower       = 0.1f;
+    public  float          maxPower       = 1;
+    public  float          velocityToStop = 1; 
+    public  bool           onFloor        = false;
+    public  bool           alreadyCollide = false;
+    public  BounceScale    bounceScale;
+    public  ParticleSystem throwParticles;
 
     public  Aim     aim;
 
@@ -87,10 +88,8 @@ public class Player : GameSystem {
 
             transform.position += distance;
 
-            //Bounce(wallPlane.bounceSide, wallPlane.restitution);
             Bounce(wallPlane);
             frameVelocityAppliedRatio = 1;
-            //frameVelocityAppliedRatio = distance.magnitude / (velocity.magnitude * Time.deltaTime);
         }
     }
 
@@ -127,8 +126,8 @@ public class Player : GameSystem {
             onFloor = true;
         }
 
-        bounceScale.Apply(bounceSide, velocity.magnitude);
         velocity *= bounceRestitution * wallRestitution;
+        bounceScale.Apply(bounceSide, velocity.magnitude);
     }
 
 
