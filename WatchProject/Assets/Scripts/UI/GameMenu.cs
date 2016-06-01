@@ -10,6 +10,7 @@ public class GameMenu : MonoBehaviour {
     public GameObject hudPannel;
     public Text remainingHitText;
     public Text collectibleText;
+    public Text fps;
 
     [Header("Pause Params")]
     public GameObject pausePannel;
@@ -73,7 +74,7 @@ public class GameMenu : MonoBehaviour {
 
     public void OnResumeClick()
     {
-        HidePause();
+        ShowHUD();
     }
 
     IEnumerator MenuAnimation(bool side)
