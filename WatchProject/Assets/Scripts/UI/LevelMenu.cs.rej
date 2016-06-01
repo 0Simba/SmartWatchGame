@@ -1,0 +1,10 @@
+diff a/WatchProject/Assets/Scripts/UI/LevelMenu.cs b/WatchProject/Assets/Scripts/UI/LevelMenu.cs	(rejected hunks)
+@@ -54,7 +54,7 @@
+             nButton.transform.SetParent(container.transform, false);
+             levels[i].reference = nButton.GetComponent<RectTransform>();
+         }
+-        _scrollForStep = (levels[0].reference.rect.height + spacing) * 0.7f;
++        _scrollForStep = (levels[0].reference.rect.height + spacing) * 0.35f;
+     }
+ 
+     public void OnBeginDrag()

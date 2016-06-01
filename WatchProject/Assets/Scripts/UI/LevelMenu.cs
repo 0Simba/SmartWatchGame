@@ -54,7 +54,7 @@ public class LevelMenu : MonoBehaviour {
             nButton.transform.SetParent(container.transform, false);
             levels[i].reference = nButton.GetComponent<RectTransform>();
         }
-        _scrollForStep = (levels[0].reference.rect.height + spacing) * 0.35f;
+        _scrollForStep = (levels[0].reference.rect.height + spacing) * 0.4f;
     }
 
     public void OnBeginDrag()
