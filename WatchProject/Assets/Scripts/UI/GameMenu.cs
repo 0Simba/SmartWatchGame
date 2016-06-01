@@ -6,27 +6,48 @@ public class GameMenu : MonoBehaviour
 {
     private bool _inPause = false;
 
-    [Header("ShootRecap Params")]
-    public GameObject recapShootPannel;
-    public Text shootRecap;
-    public Image collectibles;
-    public float showDuration;
+    [Header("spShootRecap Params")]
+    public GameObject spPannel;
+    public Text spShootRecap;
+    public Image spCollectibles;
+    public float spShowDuration;
+
+    [Header("Victory Params")]
+    public GameObject vPannel;
+    public Text vText;
+    public Button vReset;
+    public Button vMenu;
+    public float vAppearDuration;
 
     [Header("HUD Params")]
     public GameObject hudPannel;
-    public Text fps;
+    public Text hudFPS;
 
     [Header("Pause Params")]
-    public GameObject pausePannel;
-    public GameObject bExit;
-    public GameObject bRestart;
-    public GameObject bResume;
-    public float timeToAppear;
+    public GameObject pPannel;
+    public GameObject pExit;
+    public GameObject pRestart;
+    public GameObject pResume;
+    public float pAppearTime;
 
     void Start()
     {
         Game.OnBallStop += OnBallStop;
-        StartCoroutine(ShowFPS());
+        Game.OnWin += OnWin;
+        Game.OnLose += OnLose;
+        StartCoroutine(ShowHudFPS());
+    }
+
+    void OnWin()
+    {
+        vText.text = "YOU WIN !";
+        StartCoroutine(VictoryScreenAnimation());
+    }
+
+    void OnLose()
+    {
+        vText.text = "YOU LOSE !";
+        StartCoroutine(VictoryScreenAnimation());
     }
 
     void Update()
@@ -58,12 +79,12 @@ public class GameMenu : MonoBehaviour
         hudPannel.SetActive(true);
     }
 
-    IEnumerator ShowFPS()
+    IEnumerator ShowHudFPS()
     {
         while (true)
         {
-            int FPS = (int)(1 / Time.deltaTime);
-            fps.text = FPS.ToString();
+            int fps = (int)(1 / Time.deltaTime);
+            hudFPS.text = fps.ToString();
 
             yield return new WaitForSeconds(0.5f);
         }
@@ -79,7 +100,7 @@ public class GameMenu : MonoBehaviour
     void ShowPause()
     {
         HideHUD();
-        pausePannel.SetActive(true);
+        pPannel.SetActive(true);
         _inPause = true;
         Time.timeScale = 0;
         StartCoroutine(MenuAnimation(true));
@@ -111,26 +132,26 @@ public class GameMenu : MonoBehaviour
     IEnumerator MenuAnimation(bool side)
     {
         float timer = 0;
-        RectTransform tExit = bExit.GetComponent<RectTransform>();
-        RectTransform tRestart = bRestart.GetComponent<RectTransform>();
-        RectTransform tResume = bResume.GetComponent<RectTransform>();
-        bExit.GetComponent<Button>().interactable = false;
-        bRestart.GetComponent<Button>().interactable = false;
-        bResume.GetComponent<Button>().interactable = false;
+        RectTransform tExit = pExit.GetComponent<RectTransform>();
+        RectTransform tRestart = pRestart.GetComponent<RectTransform>();
+        RectTransform tResume = pResume.GetComponent<RectTransform>();
+        pExit.GetComponent<Button>().interactable = false;
+        pRestart.GetComponent<Button>().interactable = false;
+        pResume.GetComponent<Button>().interactable = false;
 
-        while (timer <= timeToAppear)
+        while (timer <= pAppearTime)
         {
             if (side)
             {
-                tRestart.localPosition = Vector3.Lerp(new Vector3(0, 370, 0), new Vector3(0, 160, 0), timer / timeToAppear);
-                tExit.localPosition = Vector3.Lerp(new Vector3(0, -370, 0), new Vector3(0, -160, 0), timer / timeToAppear);
-                tResume.localPosition = Vector3.Lerp(new Vector3(0, -210, 0), new Vector3(0, 0, 0), timer / timeToAppear);
+                tRestart.localPosition = Vector3.Lerp(new Vector3(0, 370, 0), new Vector3(0, 160, 0), timer / pAppearTime);
+                tExit.localPosition = Vector3.Lerp(new Vector3(0, -370, 0), new Vector3(0, -160, 0), timer / pAppearTime);
+                tResume.localPosition = Vector3.Lerp(new Vector3(0, -210, 0), new Vector3(0, 0, 0), timer / pAppearTime);
             }
             else
             {
-                tRestart.localPosition = Vector3.Lerp(new Vector3(0, 160, 0), new Vector3(0, 370, 0), timer / timeToAppear);
-                tExit.localPosition = Vector3.Lerp(new Vector3(0, -160, 0), new Vector3(0, -370, 0), timer / timeToAppear);
-                tResume.localPosition = Vector3.Lerp(new Vector3(0, 0, 0), new Vector3(0, -210, 0), timer / timeToAppear);
+                tRestart.localPosition = Vector3.Lerp(new Vector3(0, 160, 0), new Vector3(0, 370, 0), timer / pAppearTime);
+                tExit.localPosition = Vector3.Lerp(new Vector3(0, -160, 0), new Vector3(0, -370, 0), timer / pAppearTime);
+                tResume.localPosition = Vector3.Lerp(new Vector3(0, 0, 0), new Vector3(0, -210, 0), timer / pAppearTime);
             }
             timer += Time.unscaledDeltaTime;
             yield return null;
@@ -148,22 +169,22 @@ public class GameMenu : MonoBehaviour
             tResume.localPosition = new Vector3(0, -210, 0);
         }
 
-        bExit.GetComponent<Button>().interactable = side;
-        bRestart.GetComponent<Button>().interactable = side;
+        pExit.GetComponent<Button>().interactable = side;
+        pRestart.GetComponent<Button>().interactable = side;
         tResume.GetComponent<Button>().interactable = side;
     }
 
     // ANIMATION SHOW COUPS MENU OPEN
     IEnumerator ShowRecapShoot()
     {
-        recapShootPannel.SetActive(true);
-        shootRecap.text = Level.instance.restThrow.ToString() + " / " + Level.instance.maxThrow.ToString();
-        collectibles.fillAmount = (float)Level.instance.collectiblePicked / (float)Level.instance.maxCollectible;
+        spPannel.SetActive(true);
+        spShootRecap.text = Level.instance.restThrow.ToString() + " / " + Level.instance.maxThrow.ToString();
+        spCollectibles.fillAmount = (float)Level.instance.collectiblePicked / (float)Level.instance.maxCollectible;
 
-        float timeFade = showDuration * 0.2f;
-        float timeAppeareance = showDuration - (showDuration * 0.4f);
+        float timeFade = spShowDuration * 0.2f;
+        float timeAppeareance = spShowDuration - (spShowDuration * 0.4f);
         float timer = 0;
-        CanvasGroup iRecapShoot = recapShootPannel.GetComponent<CanvasGroup>();
+        CanvasGroup iRecapShoot = spPannel.GetComponent<CanvasGroup>();
 
         while (timer <= timeFade)
         {
@@ -186,7 +207,25 @@ public class GameMenu : MonoBehaviour
             timer += Time.unscaledDeltaTime;
             yield return null;
         }
-        recapShootPannel.SetActive(false);
+        spPannel.SetActive(false);
         NextMove();
+    }
+
+    // ANIMATION ON VICTORY APPEAR
+    IEnumerator VictoryScreenAnimation()
+    {
+        float timer = 0;
+        vPannel.SetActive(true);
+        RectTransform _rectVictory = vPannel.GetComponent< RectTransform>();
+        vReset.interactable = false;
+        vMenu.interactable = false;
+        while (timer < vAppearDuration)
+        {
+            timer += Time.deltaTime;
+            _rectVictory.localScale = Vector3.Lerp(new Vector3(0, 0, 0), new Vector3(1, 1, 1), timer / vAppearDuration);
+            yield return null;
+        }
+        vReset.interactable = true;
+        vMenu.interactable = true;
     }
 }
