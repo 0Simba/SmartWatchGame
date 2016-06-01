@@ -2,14 +2,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-public class GameMenu : MonoBehaviour {
+public class GameMenu : MonoBehaviour
+{
     private bool _inPause = false;
 
+    [Header("ShootRecap Params")]
+    public GameObject recapShootPannel;
+    public Text shootRecap;
+    public Image collectibles;
+    public float showDuration;
 
     [Header("HUD Params")]
     public GameObject hudPannel;
-    public Text remainingHitText;
-    public Text collectibleText;
     public Text fps;
 
     [Header("Pause Params")]
@@ -17,18 +21,32 @@ public class GameMenu : MonoBehaviour {
     public GameObject bExit;
     public GameObject bRestart;
     public GameObject bResume;
-    public float timeToAppear; 
+    public float timeToAppear;
 
-    void Update () {
-        if(PlayerDoubleTouch())
-            ShowPause();
-
-        if (_inPause)
-            return;
-
-        remainingHitText.text   = Level.instance.restThrow.ToString();
-        collectibleText.text = Level.instance.collectiblePicked.ToString() + "/" + Level.instance.maxCollectible.ToString();
+    void Start()
+    {
+        Game.OnBallStop += OnBallStop;
+        StartCoroutine(ShowFPS());
     }
+
+    void Update()
+    {
+        if (PlayerDoubleTouch())
+            ShowPause();
+    }
+
+    void OnBallStop()
+    {
+        Time.timeScale = 0;
+        StartCoroutine(ShowRecapShoot());
+    }
+
+    void NextMove()
+    {
+        Time.timeScale = 1;
+        Game.instance.NewMovement();
+    }
+
     void HideHUD()
     {
         hudPannel.SetActive(false);
@@ -38,11 +56,6 @@ public class GameMenu : MonoBehaviour {
     {
         HidePause();
         hudPannel.SetActive(true);
-    }
-
-    void Start()
-    {
-        StartCoroutine(ShowFPS());
     }
 
     IEnumerator ShowFPS()
@@ -74,7 +87,7 @@ public class GameMenu : MonoBehaviour {
 
     bool PlayerDoubleTouch()
     {
-        return (Input.touchCount > 0 && (Input.GetTouch(0).phase == TouchPhase.Began && Input.GetTouch(1).phase == TouchPhase.Began)) 
+        return (Input.touchCount > 0 && (Input.GetTouch(0).phase == TouchPhase.Began && Input.GetTouch(1).phase == TouchPhase.Began))
                 || (Input.GetMouseButtonDown(0) && Input.GetMouseButtonDown(1));
     }
 
@@ -93,6 +106,8 @@ public class GameMenu : MonoBehaviour {
         ShowHUD();
     }
 
+
+    // ANIMATION PAUSE MENU OPEN
     IEnumerator MenuAnimation(bool side)
     {
         float timer = 0;
@@ -122,7 +137,7 @@ public class GameMenu : MonoBehaviour {
         }
         if (side)
         {
-            tRestart.localPosition =  new Vector3(0, 160, 0);
+            tRestart.localPosition = new Vector3(0, 160, 0);
             tExit.localPosition = new Vector3(0, -160, 0);
             tResume.localPosition = new Vector3(0, 0, 0);
         }
@@ -136,5 +151,42 @@ public class GameMenu : MonoBehaviour {
         bExit.GetComponent<Button>().interactable = side;
         bRestart.GetComponent<Button>().interactable = side;
         tResume.GetComponent<Button>().interactable = side;
+    }
+
+    // ANIMATION SHOW COUPS MENU OPEN
+    IEnumerator ShowRecapShoot()
+    {
+        recapShootPannel.SetActive(true);
+        shootRecap.text = Level.instance.restThrow.ToString() + " / " + Level.instance.maxThrow.ToString();
+        collectibles.fillAmount = (float)Level.instance.collectiblePicked / (float)Level.instance.maxCollectible;
+
+        float timeFade = showDuration * 0.2f;
+        float timeAppeareance = showDuration - (showDuration * 0.4f);
+        float timer = 0;
+        CanvasGroup iRecapShoot = recapShootPannel.GetComponent<CanvasGroup>();
+
+        while (timer <= timeFade)
+        {
+            iRecapShoot.alpha = Mathf.Lerp(0, 1, timer / timeFade);
+            timer += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        timer = 0;
+        while (timer <= timeAppeareance)
+        {
+            timer += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        timer = 0;
+        while (timer <= timeFade)
+        {
+            iRecapShoot.alpha = Mathf.Lerp(1, 0, timer / timeFade);
+            timer += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        recapShootPannel.SetActive(false);
+        NextMove();
     }
 }

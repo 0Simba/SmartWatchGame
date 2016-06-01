@@ -15,9 +15,15 @@ public abstract class GameSystem : MonoBehaviour {
         stateToMethod.Add(Game.State.movement,     OnMovement);
         stateToMethod.Add(Game.State.pause,        OnPause);
         stateToMethod.Add(Game.State.onCheckpoint, OnCheckpoint);
+        stateToMethod.Add(Game.State.onBallStop,   OnBallStop);
         stateToMethod.Add(Game.State.onObjectif,   OnObjectif);
         stateToMethod.Add(Game.State.lose,         OnLose);
         stateToMethod.Add(Game.State.win,          OnWin);
+    }
+
+    public void OnBallStop()
+    {
+
     }
 
 
