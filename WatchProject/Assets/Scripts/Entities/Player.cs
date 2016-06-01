@@ -13,7 +13,6 @@ public class Player : GameSystem {
 
     private Vector3 velocity;
     private float   frameVelocityAppliedRatio = 0;
-    private Vector3 ballExtremity;
 
     public  LayerMask      collideMask;
     public  Vector3        gravity;
@@ -50,7 +49,6 @@ public class Player : GameSystem {
 
     override public void OnMovement () {
         frameVelocityAppliedRatio = 0;
-        ballExtremity             = transform.position + transform.localScale.x * velocity.normalized * 0.5f;
         onFloor                   = false;
         alreadyCollide            = false;
         velocity                  *= Mathf.Exp(-friction * Time.deltaTime);
@@ -130,28 +128,4 @@ public class Player : GameSystem {
         bounceScale.Apply(bounceSide, velocity.magnitude);
     }
 
-
-    void Die () {
-
-    }
-
-
-    void GoOnCheckPoint () {
-
-    }
-
-
-    void OnStart () {
-
-    }
-
-
-    void Waiting () {
-
-    }
-
-
-    void Win () {
-
-    }
 }

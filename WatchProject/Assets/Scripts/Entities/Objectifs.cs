@@ -3,9 +3,7 @@ using System.Collections;
 
 public class Objectifs : MonoBehaviour {
 
-    public  Disapear disapear;
-    private bool     picked = false;
-
+    public Disapear disapear;
 
     void OnTriggerEnter (Collider other) {
         if (other.tag != "Player") {
