@@ -10,10 +10,11 @@ public class Game : GameSystem {
     static public Game  instance;
     static public event SimpleAction OnThrow;
     static public event SimpleAction OnDirectionStart;
+    static public event SimpleAction OnBallStop;
     static public event SimpleAction OnLose;
     static public event SimpleAction OnWin;
 
-    public enum State { start, direction, power, movement, pause, onCheckpoint, onObjectif, lose, win };
+    public enum State { start, direction, power, movement, pause, onBallStop, onCheckpoint, onObjectif, lose, win };
 
 
     public Game.State state;
@@ -26,7 +27,7 @@ public class Game : GameSystem {
 
 
     public void Launch () {
-        EndMovement(); // quick hack
+        NewMovement();
     }
 
 
@@ -54,11 +55,16 @@ public class Game : GameSystem {
             Lose();
         }
         else {
-            ChangeState(Game.State.direction);
-            OnDirectionStart();
+            ChangeState(Game.State.onBallStop);
+            OnBallStop();
         }
     }
 
+    public void NewMovement()
+    {
+        ChangeState(Game.State.direction);
+        OnDirectionStart();
+    }
 
     public void ObjectifPicked () {
         Win();

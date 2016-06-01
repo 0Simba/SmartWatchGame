@@ -84,7 +84,6 @@ public class LevelMenu : MonoBehaviour {
                 _refStepUp += _scrollForStep;
                 _refStepDown += _scrollForStep;
 
-                float offset = -(_tContainer.rect.height * 0.5f) + Screen.height * 0.5f;
                 _currIndex++;
                 _snapPoint = Mathf.Abs(((_currIndex * (250) + Screen.height * 0.5f) - Screen.height*0.5f) / _tContainer.rect.height);
             }
