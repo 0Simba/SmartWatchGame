@@ -40,6 +40,22 @@ public class GameMenu : MonoBehaviour {
         hudPannel.SetActive(true);
     }
 
+    void Start()
+    {
+        StartCoroutine(ShowFPS());
+    }
+
+    IEnumerator ShowFPS()
+    {
+        while (true)
+        {
+            int FPS = (int)(1 / Time.deltaTime);
+            fps.text = FPS.ToString();
+
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
+
     void HidePause()
     {
         _inPause = false;

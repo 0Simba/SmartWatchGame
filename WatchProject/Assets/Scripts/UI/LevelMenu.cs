@@ -17,8 +17,17 @@ public class LevelMenu : MonoBehaviour {
     private int _currIndex;
     private RectTransform _tContainer;
     private Vector3 _scrollStart;
-    private Vector3 _center;
 
+    private float _snapPoint;
+    private float _scrollForStep;
+    private bool _isScrolling;
+
+    private float _scrollStepDown;
+    private float _scrollStepUp;
+    private float _refStepUp;
+    private float _refStepDown;
+
+    public float spacing = 200;
     public ScrollRect scrollRect;
     public GameObject prefabLevelSelectorButton;
     public GameObject container;
@@ -27,53 +36,68 @@ public class LevelMenu : MonoBehaviour {
     // Use this for initialization
     void Start () {
         _currIndex = 0;
+        _snapPoint = 0; 
         _tContainer = container.GetComponent<RectTransform>();
         AddButtonLevels();
-
-
     }
 
     void AddButtonLevels()
     {
+        float offset = -(_tContainer.rect.height * 0.5f) + Screen.height * 0.5f;
         for (int i = 0; i < levels.Count; i++)
         {
             GameObject nButton = Instantiate(prefabLevelSelectorButton, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
-            nButton.GetComponent<RectTransform>().localPosition = new Vector3(0, (200 * i), 0);
+            nButton.GetComponent<RectTransform>().localPosition = new Vector3(0, offset + (spacing * i), 0);
             nButton.GetComponent<Image>().sprite = levels[i].image;
             nButton.GetComponent<LevelIconSelector>().levelName = levels[i].levelName;
             nButton.GetComponent<Button>().onClick.AddListener(OnClickLevel);
             nButton.transform.SetParent(container.transform, false);
             levels[i].reference = nButton.GetComponent<RectTransform>();
         }
+        _scrollForStep = (levels[0].reference.rect.height + spacing) * 0.5f;
     }
 
     public void OnBeginDrag()
     {
+        _isScrolling = true;
         _scrollStart = _tContainer.localPosition;
+        _refStepUp = _scrollForStep;
+        _refStepDown = -_scrollForStep;
     }
 
     public void OnEndDrag()
     {
-        //_tContainer.localPosition = _center;
+        _isScrolling = false;
+        scrollRect.verticalNormalizedPosition = _snapPoint;
     }
 
     public void OnScroll()
     {
+        if (!_isScrolling)
+            return;
         Vector3 totalScrolled = _scrollStart - _tContainer.localPosition;
-        if(totalScrolled.y > 80)
+
+        if (totalScrolled.y > (_refStepUp))
         {
             if ((_currIndex + 1) < levels.Count)
             {
+                _refStepUp += _scrollForStep;
+                _refStepDown += _scrollForStep;
+
+                float offset = -(_tContainer.rect.height * 0.5f) + Screen.height * 0.5f;
                 _currIndex++;
-                _center = -levels[_currIndex].reference.localPosition;
+                _snapPoint = Mathf.Abs(((_currIndex * (250) + Screen.height * 0.5f) - Screen.height*0.5f) / _tContainer.rect.height);
             }
         }
-        if (totalScrolled.y < -80)
+        if (totalScrolled.y < _refStepDown)
         {
-            if (_currIndex-1 > 0)
+            if (_currIndex-1 >= 0)
             {
+                _refStepUp -= _scrollForStep;
+                _refStepDown -= _scrollForStep;
+
                 _currIndex--;
-                _center = -levels[_currIndex].reference.localPosition;
+                _snapPoint = Mathf.Abs(((_currIndex * (250) + Screen.height * 0.5f) - Screen.height * 0.5f) / _tContainer.rect.height);
             }
         }
     }
