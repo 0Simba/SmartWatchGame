@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Player : GameSystem {
 
     static public Dictionary<BounceSide, Vector3> bounceToVector;
-
+    static public Player instance;
 
 
     public enum BounceSide { left, right, top, down };
@@ -30,6 +30,7 @@ public class Player : GameSystem {
 
 
     void Start () {
+        instance = this;
         bounceToVector = new Dictionary<BounceSide, Vector3>();
 
         bounceToVector.Add(BounceSide.left,  Vector3.left);
