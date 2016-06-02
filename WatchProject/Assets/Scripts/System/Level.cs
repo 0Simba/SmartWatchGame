@@ -9,11 +9,15 @@ public class Level : MonoBehaviour {
     ===================================*/
 
     static public void CollectiblePicked () {
+        if (OnCollectibleTaken != null)
+            OnCollectibleTaken();
         instance.collectiblePicked++;
     }
 
     static public Level instance;
 
+    public delegate void SimpleAction();
+    static public event SimpleAction OnCollectibleTaken;
 
 
 
@@ -39,5 +43,4 @@ public class Level : MonoBehaviour {
     private void OnThrow () {
         restThrow--;
     }
-
 }
