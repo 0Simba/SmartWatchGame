@@ -88,6 +88,7 @@ public class HomeMenu : MonoBehaviour {
             timer += Time.deltaTime;
             yield return null;
         }
+        _pannelRect.rotation = Quaternion.Euler(new Vector3(0, 0, 360));
 
         timer = 0;
         while (timer < step3duration)
@@ -98,6 +99,10 @@ public class HomeMenu : MonoBehaviour {
             timer += Time.deltaTime;
             yield return null;
         }
+
+        _bOptionRect.localScale = new Vector3(1, 1, 1);
+        pImage.fillAmount = 1;
+        eImage.fillAmount = 1;
 
         // END ANIMATION
 
