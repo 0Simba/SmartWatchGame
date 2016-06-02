@@ -27,12 +27,14 @@ public class LevelMenu : MonoBehaviour {
     private float _refStepUp;
     private float _refStepDown;
 
-    public float appearTime = 1;
-    public float spacing = 200;
-    public ScrollRect scrollRect;
-    public GameObject prefabLevelSelectorButton;
-    public GameObject container;
-    public List<LevelDescription> levels = new List<LevelDescription>();
+    public float                  scrollGoToSpeed              = 0.2f;
+    public float                  scrollGoToSmoothAcceleration = 100f;
+    public float                  appearTime      = 1;
+    public float                  spacing         = 200;
+    public List<LevelDescription> levels          = new List<LevelDescription>();
+    public ScrollRect             scrollRect;
+    public GameObject             prefabLevelSelectorButton;
+    public GameObject             container;
 
     // Use this for initialization
     void Start () {
@@ -61,7 +63,7 @@ public class LevelMenu : MonoBehaviour {
             nButton.GetComponentInChildren<Text>().text = levels[i].name;
             levels[i].reference = nButton.GetComponent<RectTransform>();
         }
-        _scrollForStep = (levels[0].reference.rect.height + spacing) * 0.4f;
+        _scrollForStep = (levels[0].reference.rect.height + spacing) * 0.3f;
     }
 
     public void OnBeginDrag()
@@ -74,9 +76,33 @@ public class LevelMenu : MonoBehaviour {
 
     public void OnEndDrag()
     {
-        _isScrolling = false;
-        scrollRect.verticalNormalizedPosition = _snapPoint;
+        ScrollGoTo(_snapPoint);
     }
+
+
+    private bool _isScrollingTo = false;
+    public void ScrollGoTo (float point) {
+        if (_isScrollingTo) {
+            return;
+        }
+
+        StartCoroutine(ScrollGoToCoroutine(point));
+    }
+
+
+    IEnumerator ScrollGoToCoroutine (float point) {
+        _isScrollingTo = true;
+        while (Mathf.Abs(scrollRect.verticalNormalizedPosition - point) > scrollGoToSpeed * Time.deltaTime) {
+            float addMoveSpeed = Mathf.Pow(Mathf.Abs(scrollRect.verticalNormalizedPosition - point) * scrollGoToSmoothAcceleration + 1, 4);
+            scrollRect.verticalNormalizedPosition = Mathf.MoveTowards(scrollRect.verticalNormalizedPosition, point, scrollGoToSpeed * Time.deltaTime * addMoveSpeed);
+            yield return null;
+        }
+        scrollRect.verticalNormalizedPosition = _snapPoint;
+        _isScrollingTo = false;
+
+        _isScrolling = false;
+    }
+
 
     public void OnScroll()
     {
