@@ -183,20 +183,31 @@ public class GameMenu : MonoBehaviour
         RectTransform tExit = pExit.GetComponent<RectTransform>();
         RectTransform tRestart = pRestart.GetComponent<RectTransform>();
         RectTransform tResume = pResume.GetComponent<RectTransform>();
+        Image iExit = pExit.transform.GetChild(0).GetComponentInChildren<Image>();
+        Image iRestart = tRestart.transform.GetChild(0).GetComponentInChildren<Image>();
+        iExit.fillAmount = 0;
+        iRestart.fillAmount = 0;
+
         pExit.GetComponent<Button>().interactable = false;
         pRestart.GetComponent<Button>().interactable = false;
         pResume.GetComponent<Button>().interactable = false;
+
+
 
         while (timer <= pAppearTime)
         {
             if (side)
             {
+                iExit.fillAmount = Mathf.Lerp(0, 1, timer / pAppearTime);
+                iRestart.fillAmount = Mathf.Lerp(0, 1, timer / pAppearTime);
                 tRestart.localPosition = Vector3.Lerp(new Vector3(0, 370, 0), new Vector3(0, 160, 0), timer / pAppearTime);
                 tExit.localPosition = Vector3.Lerp(new Vector3(0, -370, 0), new Vector3(0, -160, 0), timer / pAppearTime);
                 tResume.localPosition = Vector3.Lerp(new Vector3(0, -210, 0), new Vector3(0, 0, 0), timer / pAppearTime);
             }
             else
             {
+                iExit.fillAmount = Mathf.Lerp(1, 0, timer / pAppearTime);
+                iRestart.fillAmount = Mathf.Lerp(1, 0, timer / pAppearTime);
                 tRestart.localPosition = Vector3.Lerp(new Vector3(0, 160, 0), new Vector3(0, 370, 0), timer / pAppearTime);
                 tExit.localPosition = Vector3.Lerp(new Vector3(0, -160, 0), new Vector3(0, -370, 0), timer / pAppearTime);
                 tResume.localPosition = Vector3.Lerp(new Vector3(0, 0, 0), new Vector3(0, -210, 0), timer / pAppearTime);
@@ -206,12 +217,16 @@ public class GameMenu : MonoBehaviour
         }
         if (side)
         {
+            iExit.fillAmount = 1;
+            iRestart.fillAmount = 1;
             tRestart.localPosition = new Vector3(0, 160, 0);
             tExit.localPosition = new Vector3(0, -160, 0);
             tResume.localPosition = new Vector3(0, 0, 0);
         }
         else
         {
+            iExit.fillAmount = 0;
+            iRestart.fillAmount = 0;
             tRestart.localPosition = new Vector3(0, 370, 0);
             tExit.localPosition = new Vector3(0, -370, 0);
             tResume.localPosition = new Vector3(0, -210, 0);
