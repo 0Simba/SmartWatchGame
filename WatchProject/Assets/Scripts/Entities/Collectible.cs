@@ -10,7 +10,7 @@ public class Collectible : MonoBehaviour {
         if (other.tag == "Player" && !picked) {
             picked = true;
             disapear.Launch();
-            Level.CollectiblePicked();
+            Level.CollectiblePicked(transform);
         }
     }
 }

@@ -8,9 +8,9 @@ public class Level : MonoBehaviour {
     =            Static Part            =
     ===================================*/
 
-    static public void CollectiblePicked () {
+    static public void CollectiblePicked (Transform elem) {
         if (OnCollectibleTaken != null) {
-            OnCollectibleTaken();
+            OnCollectibleTaken(elem);
         }
 
         instance.collectiblePicked++;
@@ -18,7 +18,7 @@ public class Level : MonoBehaviour {
 
     static public Level instance;
 
-    public delegate void SimpleAction();
+    public delegate void SimpleAction(Transform elem);
     static public event SimpleAction OnCollectibleTaken;
 
 
