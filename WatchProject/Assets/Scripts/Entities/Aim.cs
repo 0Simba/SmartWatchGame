@@ -25,6 +25,12 @@ public class Aim : GameSystem {
     }
 
 
+    void OnDestroy () {
+        Game.OnThrow          -= Deactivate;
+        Game.OnDirectionStart -= Activate;
+    }
+
+
     void Deactivate () {
         pivot.gameObject.SetActive(false);
     }
