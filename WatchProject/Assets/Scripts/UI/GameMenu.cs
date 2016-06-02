@@ -16,7 +16,8 @@ public class GameMenu : MonoBehaviour
     [Header("Victory Params")]
     public GameObject vPannel;
     public Text vText;
-    public Button vReset;
+    public GameObject vReset;
+    public GameObject vNext;
     public Button vMenu;
     public float vAppearDuration;
 
@@ -65,12 +66,14 @@ public class GameMenu : MonoBehaviour
     void OnWin()
     {
         vText.text = "YOU WIN !";
+        vNext.SetActive(true);
         StartCoroutine(VictoryScreenAnimation());
     }
 
     void OnLose()
     {
         vText.text = "YOU LOSE !";
+        vReset.SetActive(true);
         StartCoroutine(VictoryScreenAnimation());
     }
 
@@ -82,6 +85,7 @@ public class GameMenu : MonoBehaviour
 
     void OnBallStop()
     {
+        Game.instance.OnPause();
         Time.timeScale = 0;
         StartCoroutine(ShowRecapShoot());
     }
@@ -262,7 +266,8 @@ public class GameMenu : MonoBehaviour
         float timer = 0;
         ShowPannel("Victory");
         RectTransform _rectVictory = vPannel.GetComponent< RectTransform>();
-        vReset.interactable = false;
+        vReset.GetComponent<Button>().interactable = false;
+        vNext.GetComponent<Button>().interactable = false;
         vMenu.interactable = false;
         while (timer < vAppearDuration)
         {
@@ -270,7 +275,8 @@ public class GameMenu : MonoBehaviour
             _rectVictory.localScale = Vector3.Lerp(new Vector3(0, 0, 0), new Vector3(1, 1, 1), timer / vAppearDuration);
             yield return null;
         }
-        vReset.interactable = true;
+        vReset.GetComponent<Button>().interactable = true;
+        vNext.GetComponent<Button>().interactable = true;
         vMenu.interactable = true;
     }
 }
