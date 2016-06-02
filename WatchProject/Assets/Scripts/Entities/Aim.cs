@@ -22,6 +22,8 @@ public class Aim : GameSystem {
 
         Game.OnThrow          += Deactivate;
         Game.OnDirectionStart += Activate;
+
+        Deactivate();
     }
 
 
