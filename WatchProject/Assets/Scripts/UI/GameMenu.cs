@@ -4,8 +4,8 @@ using System.Collections;
 
 public class GameMenu : MonoBehaviour
 {
-    private bool _inPause = false;
     private Game.State _prevState;
+    private float _oldFillValue;
 
     [Header("spShootRecap Params")]
     public GameObject spPannel;
@@ -34,19 +34,12 @@ public class GameMenu : MonoBehaviour
 
     void Start()
     {
+        _oldFillValue = 0;
         Game.OnBallStop += OnBallStop;
-        Game.OnWin      += OnWin;
-        Game.OnLose     += OnLose;
+        Game.OnWin += OnWin;
+        Game.OnLose += OnLose;
         StartCoroutine(ShowHudFPS());
     }
-
-
-    void OnDestroy () {
-        Game.OnBallStop -= OnBallStop;
-        Game.OnWin      -= OnWin;
-        Game.OnLose     -= OnLose;
-    }
-
 
     void ShowPannel(string name)
     {
@@ -131,7 +124,6 @@ public class GameMenu : MonoBehaviour
     void HidePause()
     {
         Game.instance.OnResume(_prevState);
-        _inPause = false;
         Time.timeScale = 1;
         StartCoroutine(MenuAnimation(false));
     }
@@ -141,7 +133,6 @@ public class GameMenu : MonoBehaviour
         _prevState = Game.instance.state;
         Game.instance.OnPause();
         ShowPannel("Pause");
-        _inPause = true;
         Time.timeScale = 0;
         StartCoroutine(MenuAnimation(true));
     }
@@ -254,12 +245,12 @@ public class GameMenu : MonoBehaviour
         float fill = (float)Level.instance.collectiblePicked / (float)Level.instance.maxCollectible;
         while (timer <= timeAppeareance)
         {
-            spCollectibles.fillAmount = Mathf.Lerp(0, fill, timer/ (timeAppeareance*0.5f) );
+            spCollectibles.fillAmount = Mathf.Lerp(_oldFillValue, fill, timer/ (timeAppeareance*0.5f) );
             Vector3.Lerp(new Vector3(0, 0, 0), new Vector3(1, 1, 1), timer / vAppearDuration);
             timer += Time.unscaledDeltaTime;
             yield return null;
         }
-
+        _oldFillValue = fill;
         timer = 0;
         while (timer <= timeFade)
         {
