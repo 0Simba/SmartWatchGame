@@ -26,19 +26,22 @@ public class Game : GameSystem {
     }
 
 
-    public void Launch () {
+    public void Launch ()
+    {
         NewMovement();
     }
 
 
-    public override void OnDirection () {
+    public override void OnDirection ()
+    {
         if (PlayerTap()) {
             ChangeState(Game.State.power);
         }
     }
 
 
-    public override void OnPower () {
+    public override void OnPower ()
+    {
         if (PlayerTap()) {
             ChangeState(Game.State.movement);
             OnThrow();
@@ -46,18 +49,30 @@ public class Game : GameSystem {
     }
 
 
-    public override void OnMovement () {
+    public override void OnMovement ()
+    {
     }
 
 
     public void EndMovement () {
-        if (Level.instance.restThrow <= 0) {
+        if (Level.instance.restThrow <= 0)
+        {
             Lose();
         }
         else {
             ChangeState(Game.State.onBallStop);
             OnBallStop();
         }
+    }
+
+    public override void OnPause()
+    {
+        ChangeState(State.pause);
+    }
+
+    public void OnResume(State state)
+    {
+        ChangeState(state);
     }
 
     public void NewMovement()

@@ -5,6 +5,7 @@ using System.Collections;
 public class GameMenu : MonoBehaviour
 {
     private bool _inPause = false;
+    private Game.State _prevState;
 
     [Header("spShootRecap Params")]
     public GameObject spPannel;
@@ -38,6 +39,29 @@ public class GameMenu : MonoBehaviour
         StartCoroutine(ShowHudFPS());
     }
 
+    void ShowPannel(string name)
+    {
+        spPannel.SetActive(false);
+        hudPannel.SetActive(false);
+        vPannel.SetActive(false);
+        pPannel.SetActive(false);
+        switch (name)
+        {
+            case "HUD":
+                hudPannel.SetActive(true);
+                break;
+            case "Pause":
+                pPannel.SetActive(true);
+                break;
+            case "Victory":
+                vPannel.SetActive(true);
+                break;
+            case "ShootRecap":
+                spPannel.SetActive(true);
+                break;
+        }
+    }
+
     void OnWin()
     {
         vText.text = "YOU WIN !";
@@ -68,14 +92,9 @@ public class GameMenu : MonoBehaviour
         Game.instance.NewMovement();
     }
 
-    void HideHUD()
-    {
-        hudPannel.SetActive(false);
-    }
-
     void ShowHUD()
     {
-        HidePause();
+        ShowPannel("HUD");
         hudPannel.SetActive(true);
     }
 
@@ -90,8 +109,16 @@ public class GameMenu : MonoBehaviour
         }
     }
 
+    public void SkipRecapScreen()
+    {
+        StopCoroutine(ShowRecapShoot());
+        ShowPannel("HUD");
+        NextMove();
+    }
+
     void HidePause()
     {
+        Game.instance.OnResume(_prevState);
         _inPause = false;
         Time.timeScale = 1;
         StartCoroutine(MenuAnimation(false));
@@ -99,8 +126,9 @@ public class GameMenu : MonoBehaviour
 
     void ShowPause()
     {
-        HideHUD();
-        pPannel.SetActive(true);
+        _prevState = Game.instance.state;
+        Game.instance.OnPause();
+        ShowPannel("Pause");
         _inPause = true;
         Time.timeScale = 0;
         StartCoroutine(MenuAnimation(true));
@@ -124,7 +152,7 @@ public class GameMenu : MonoBehaviour
 
     public void OnResumeClick()
     {
-        ShowHUD();
+        HidePause();
     }
 
 
@@ -177,7 +205,7 @@ public class GameMenu : MonoBehaviour
     // ANIMATION SHOW COUPS MENU OPEN
     IEnumerator ShowRecapShoot()
     {
-        spPannel.SetActive(true);
+        ShowPannel("ShootRecap");
         spShootRecap.text = Level.instance.restThrow.ToString() + " / " + Level.instance.maxThrow.ToString();
         spCollectibles.fillAmount = (float)Level.instance.collectiblePicked / (float)Level.instance.maxCollectible;
 
@@ -207,7 +235,7 @@ public class GameMenu : MonoBehaviour
             timer += Time.unscaledDeltaTime;
             yield return null;
         }
-        spPannel.SetActive(false);
+        ShowPannel("HUD");
         NextMove();
     }
 
@@ -215,7 +243,7 @@ public class GameMenu : MonoBehaviour
     IEnumerator VictoryScreenAnimation()
     {
         float timer = 0;
-        vPannel.SetActive(true);
+        ShowPannel("Victory");
         RectTransform _rectVictory = vPannel.GetComponent< RectTransform>();
         vReset.interactable = false;
         vMenu.interactable = false;
