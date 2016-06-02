@@ -52,9 +52,10 @@ public class LevelMenu : MonoBehaviour {
             nButton.GetComponent<LevelIconSelector>().levelName = levels[i].levelName;
             nButton.GetComponent<Button>().onClick.AddListener(OnClickLevel);
             nButton.transform.SetParent(container.transform, false);
+            nButton.GetComponentInChildren<Text>().text = levels[i].name;
             levels[i].reference = nButton.GetComponent<RectTransform>();
         }
-        _scrollForStep = (levels[0].reference.rect.height + spacing) * 0.35f;
+        _scrollForStep = (levels[0].reference.rect.height + spacing) * 0.4f;
     }
 
     public void OnBeginDrag()
