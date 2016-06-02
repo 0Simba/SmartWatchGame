@@ -236,7 +236,7 @@ public class GameMenu : MonoBehaviour
     {
         ShowPannel("ShootRecap");
         spShootRecap.text = Level.instance.restThrow.ToString() + " / " + Level.instance.maxThrow.ToString();
-        spCollectibles.fillAmount = (float)Level.instance.collectiblePicked / (float)Level.instance.maxCollectible;
+        spCollectibles.fillAmount = 0.0f;
 
         float timeFade = spShowDuration * 0.2f;
         float timeAppeareance = spShowDuration - (spShowDuration * 0.4f);
@@ -251,8 +251,11 @@ public class GameMenu : MonoBehaviour
         }
 
         timer = 0;
+        float fill = (float)Level.instance.collectiblePicked / (float)Level.instance.maxCollectible;
         while (timer <= timeAppeareance)
         {
+            spCollectibles.fillAmount = Mathf.Lerp(0, fill, timer/ (timeAppeareance*0.5f) );
+            Vector3.Lerp(new Vector3(0, 0, 0), new Vector3(1, 1, 1), timer / vAppearDuration);
             timer += Time.unscaledDeltaTime;
             yield return null;
         }
