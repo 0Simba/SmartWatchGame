@@ -148,12 +148,14 @@ public class GameMenu : MonoBehaviour
 
     public void OnRestartClick()
     {
+        Debug.Log("OnRestartClick");
         Time.timeScale = 1;
         Application.LoadLevel(Application.loadedLevelName);
     }
 
     public void OnNextLevel()
     {
+        Debug.Log("OnNextLevel");
         Time.timeScale = 1;
         int idLevel = Application.loadedLevel;
         idLevel++;
@@ -165,6 +167,7 @@ public class GameMenu : MonoBehaviour
 
     public void OnExitClick()
     {
+        Debug.Log("OnExitClick");
         Time.timeScale = 1;
         Application.LoadLevel("Menu");
     }
