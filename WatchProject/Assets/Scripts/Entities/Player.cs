@@ -42,6 +42,11 @@ public class Player : GameSystem {
     }
 
 
+    void OnDestroy () {
+        Game.OnThrow -= Throw;
+    }
+
+
     void Throw () {
         float power = aim.ratioPower * (maxPower - minPower) + minPower;
         velocity    = aim.transform.up.normalized * power;

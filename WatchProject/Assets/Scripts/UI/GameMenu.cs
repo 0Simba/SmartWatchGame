@@ -35,10 +35,18 @@ public class GameMenu : MonoBehaviour
     void Start()
     {
         Game.OnBallStop += OnBallStop;
-        Game.OnWin += OnWin;
-        Game.OnLose += OnLose;
+        Game.OnWin      += OnWin;
+        Game.OnLose     += OnLose;
         StartCoroutine(ShowHudFPS());
     }
+
+
+    void OnDestroy () {
+        Game.OnBallStop -= OnBallStop;
+        Game.OnWin      -= OnWin;
+        Game.OnLose     -= OnLose;
+    }
+
 
     void ShowPannel(string name)
     {
