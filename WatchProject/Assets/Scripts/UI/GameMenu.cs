@@ -36,15 +36,23 @@ public class GameMenu : MonoBehaviour
     void Start()
     {
         _oldFillValue = 0;
-        Game.OnBallStop += OnBallStop;
-        Game.OnWin += OnWin;
-        Game.OnLose += OnLose;
+        Game.OnBallStop          += OnBallStop;
+        Game.OnWin               += OnWin;
+        Game.OnLose              += OnLose;
         Level.OnCollectibleTaken += CollectibleTaken;
         StartCoroutine(ShowHudFPS());
     }
 
-    void CollectibleTaken()
-    {
+
+    void OnDestroy () {
+        Game.OnBallStop          -= OnBallStop;
+        Game.OnWin               -= OnWin;
+        Game.OnLose              -= OnLose;
+        Level.OnCollectibleTaken -= CollectibleTaken;
+    }
+
+
+    void CollectibleTaken () {
         StartCoroutine(ColletibleAlpha());
     }
 
@@ -308,8 +316,7 @@ public class GameMenu : MonoBehaviour
         vMenu.interactable = true;
     }
 
-    IEnumerator ColletibleAlpha()
-    {
+    IEnumerator ColletibleAlpha () {
         float timer = 0;
         CanvasGroup _cGroup = collectibleImage.GetComponent<CanvasGroup>();
         while (timer < 0.15f)

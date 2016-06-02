@@ -9,8 +9,10 @@ public class Level : MonoBehaviour {
     ===================================*/
 
     static public void CollectiblePicked () {
-        if (OnCollectibleTaken != null)
+        if (OnCollectibleTaken != null) {
             OnCollectibleTaken();
+        }
+
         instance.collectiblePicked++;
     }
 
