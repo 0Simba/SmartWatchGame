@@ -6,6 +6,7 @@ public class GameMenu : MonoBehaviour
 {
     private Game.State _prevState;
     private float _oldFillValue;
+    private Camera _cam;
 
     [Header("spShootRecap Params")]
     public GameObject spPannel;
@@ -24,7 +25,7 @@ public class GameMenu : MonoBehaviour
     [Header("HUD Params")]
     public GameObject hudPannel;
     public Text hudFPS;
-    public Image collectibleImage;
+    public GameObject hudCollectibleImage;
 
     [Header("Pause Params")]
     public GameObject pPannel;
@@ -36,6 +37,7 @@ public class GameMenu : MonoBehaviour
     void Start()
     {
         _oldFillValue = 0;
+        _cam = Camera.main;
         Game.OnBallStop          += OnBallStop;
         Game.OnWin               += OnWin;
         Game.OnLose              += OnLose;
@@ -52,8 +54,8 @@ public class GameMenu : MonoBehaviour
     }
 
 
-    void CollectibleTaken () {
-        StartCoroutine(ColletibleAlpha());
+    void CollectibleTaken (Transform elem) {
+        StartCoroutine(ColletibleAlpha(elem.position));
     }
 
 
@@ -164,7 +166,6 @@ public class GameMenu : MonoBehaviour
 
     public void OnRestartClick()
     {
-        Debug.Log("OnRestartClick");
         Time.timeScale = 1;
         Application.LoadLevel(Application.loadedLevelName);
     }
@@ -315,23 +316,31 @@ public class GameMenu : MonoBehaviour
         vMenu.interactable = true;
     }
 
-    IEnumerator ColletibleAlpha () {
+    IEnumerator ColletibleAlpha (Vector3 posObject) {
+        GameObject collectiblePrefab = Instantiate(hudCollectibleImage, Vector3.zero, Quaternion.identity) as GameObject;
+        Image collectibleImage = collectiblePrefab.GetComponent<Image>();
+        collectibleImage.transform.SetParent(hudPannel.transform);
+
         float timer = 0;
         CanvasGroup _cGroup = collectibleImage.GetComponent<CanvasGroup>();
         RectTransform _rec = collectibleImage.GetComponent<RectTransform>();
-
-        _rec.localScale = Vector3.zero;
-        _cGroup.alpha = 0;
-
-        float time = 0.3f;
+        Vector3 position = _cam.WorldToViewportPoint(posObject);
+        position = new Vector3(position.x, position.y, 0);
+        Debug.Log(position);
+        _rec.localScale = Vector3.one;
+        //_cGroup.alpha = 0;
+        _rec.localPosition = position;
+        float time = 0.5f;
         while (timer < time)
         {
-            _rec.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, timer / time);
-            _cGroup.alpha = Mathf.Lerp(1.0f, 0f, timer / time);
+            _rec.localPosition = Vector3.Slerp(position, new Vector3(160, -160, 0), timer / time);
+            _rec.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, timer / time);
+            //_cGroup.alpha = Mathf.Lerp(1.0f, 0f, timer / time);
             timer += Time.deltaTime;
             yield return null;
         }
+        _rec.localPosition = new Vector3(160, -160, 0);
         timer = 0;
-        _cGroup.alpha = 0;
+        //_cGroup.alpha = 0;
     }
 }
