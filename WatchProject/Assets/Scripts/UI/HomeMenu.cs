@@ -84,7 +84,7 @@ public class HomeMenu : MonoBehaviour {
                 rotation++;
                 timer = 0;
             }
-            _pannelRect.rotation = Quaternion.Euler(Vector3.Lerp(new Vector3(0, 0, 0), new Vector3(0, 0, 360), timer / step2TimerPerRotation));
+            _pannelRect.rotation = Quaternion.Euler(Vector3.Lerp(Vector3.zero, new Vector3(0, 0, 360), timer / step2TimerPerRotation));
             timer += Time.deltaTime;
             yield return null;
         }
@@ -95,12 +95,12 @@ public class HomeMenu : MonoBehaviour {
         {
             pImage.fillAmount = Mathf.Lerp(0, 1, timer / step3duration);
             eImage.fillAmount = Mathf.Lerp(0, 1, timer / step3duration);
-            _bOptionRect.localScale = Vector3.Lerp(new Vector3(0, 0, 0), new Vector3(1, 1, 1), timer / step3duration);
+            _bOptionRect.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, timer / step3duration);
             timer += Time.deltaTime;
             yield return null;
         }
 
-        _bOptionRect.localScale = new Vector3(1, 1, 1);
+        _bOptionRect.localScale = Vector3.one;
         pImage.fillAmount = 1;
         eImage.fillAmount = 1;
 

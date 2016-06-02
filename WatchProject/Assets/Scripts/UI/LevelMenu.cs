@@ -52,7 +52,7 @@ public class LevelMenu : MonoBehaviour {
         float offset = -(_tContainer.rect.height * 0.5f) + Screen.height * 0.5f;
         for (int i = 0; i < levels.Count; i++)
         {
-            GameObject nButton = Instantiate(prefabLevelSelectorButton, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+            GameObject nButton = Instantiate(prefabLevelSelectorButton, Vector3.zero, Quaternion.identity) as GameObject;
             nButton.GetComponent<RectTransform>().localPosition = new Vector3(0, offset + (spacing * i), 0);
             nButton.GetComponent<Image>().sprite = levels[i].image;
             nButton.GetComponent<LevelIconSelector>().levelName = levels[i].levelName;
@@ -120,10 +120,10 @@ public class LevelMenu : MonoBehaviour {
         RectTransform _rec = transform.GetComponent<RectTransform>();
         while (_timer < appearTime)
         {
-            _rec.localPosition = Vector3.Lerp(new Vector3(0, 320, 0), new Vector3(0, 0, 0), _timer/ appearTime);
+            _rec.localPosition = Vector3.Lerp(new Vector3(0, 320, 0), Vector3.zero, _timer/ appearTime);
             _timer += Time.deltaTime;
             yield return null;
         }
-        _rec.localPosition = new Vector3(0, 0, 0);
+        _rec.localPosition = Vector3.zero;
     }
 }

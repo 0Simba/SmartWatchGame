@@ -221,7 +221,7 @@ public class GameMenu : MonoBehaviour
                 iRestart.fillAmount = Mathf.Lerp(0, 1, timer / pAppearTime);
                 tRestart.localPosition = Vector3.Lerp(new Vector3(0, 370, 0), new Vector3(0, 160, 0), timer / pAppearTime);
                 tExit.localPosition = Vector3.Lerp(new Vector3(0, -370, 0), new Vector3(0, -160, 0), timer / pAppearTime);
-                tResume.localPosition = Vector3.Lerp(new Vector3(0, -210, 0), new Vector3(0, 0, 0), timer / pAppearTime);
+                tResume.localPosition = Vector3.Lerp(new Vector3(0, -210, 0), Vector3.zero, timer / pAppearTime);
             }
             else
             {
@@ -229,7 +229,7 @@ public class GameMenu : MonoBehaviour
                 iRestart.fillAmount = Mathf.Lerp(1, 0, timer / pAppearTime);
                 tRestart.localPosition = Vector3.Lerp(new Vector3(0, 160, 0), new Vector3(0, 370, 0), timer / pAppearTime);
                 tExit.localPosition = Vector3.Lerp(new Vector3(0, -160, 0), new Vector3(0, -370, 0), timer / pAppearTime);
-                tResume.localPosition = Vector3.Lerp(new Vector3(0, 0, 0), new Vector3(0, -210, 0), timer / pAppearTime);
+                tResume.localPosition = Vector3.Lerp(Vector3.zero, new Vector3(0, -210, 0), timer / pAppearTime);
             }
             timer += Time.unscaledDeltaTime;
             yield return null;
@@ -280,7 +280,6 @@ public class GameMenu : MonoBehaviour
         while (timer <= timeAppeareance)
         {
             spCollectibles.fillAmount = Mathf.Lerp(_oldFillValue, fill, timer/ (timeAppeareance*0.5f) );
-            Vector3.Lerp(new Vector3(0, 0, 0), new Vector3(1, 1, 1), timer / vAppearDuration);
             timer += Time.unscaledDeltaTime;
             yield return null;
         }
@@ -308,7 +307,7 @@ public class GameMenu : MonoBehaviour
         while (timer < vAppearDuration)
         {
             timer += Time.deltaTime;
-            _rectVictory.localScale = Vector3.Lerp(new Vector3(0, 0, 0), new Vector3(1, 1, 1), timer / vAppearDuration);
+            _rectVictory.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, timer / vAppearDuration);
             yield return null;
         }
         vReset.GetComponent<Button>().interactable = true;
@@ -319,19 +318,20 @@ public class GameMenu : MonoBehaviour
     IEnumerator ColletibleAlpha () {
         float timer = 0;
         CanvasGroup _cGroup = collectibleImage.GetComponent<CanvasGroup>();
-        while (timer < 0.15f)
+        RectTransform _rec = collectibleImage.GetComponent<RectTransform>();
+
+        _rec.localScale = Vector3.zero;
+        _cGroup.alpha = 0;
+
+        float time = 0.3f;
+        while (timer < time)
         {
-            _cGroup.alpha = Mathf.Lerp(0.0f, 0.5f, timer / 0.15f);
+            _rec.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, timer / time);
+            _cGroup.alpha = Mathf.Lerp(1.0f, 0f, timer / time);
             timer += Time.deltaTime;
             yield return null;
         }
         timer = 0;
-        while (timer < 0.1f)
-        {
-            _cGroup.alpha = Mathf.Lerp(0.5f, 0.0f, timer / 0.15f);
-            timer += Time.deltaTime;
-            yield return null;
-        }
         _cGroup.alpha = 0;
     }
 }
