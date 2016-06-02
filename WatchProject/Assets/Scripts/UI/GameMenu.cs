@@ -140,18 +140,35 @@ public class GameMenu : MonoBehaviour
                 || (Input.GetMouseButtonDown(0) && Input.GetMouseButtonDown(1));
     }
 
+
+    // CLICK PARAMS ---------------------------------------------------------------
+
     public void OnRestartClick()
     {
+        Time.timeScale = 1;
         Application.LoadLevel(Application.loadedLevelName);
+    }
+
+    public void OnNextLevel()
+    {
+        Time.timeScale = 1;
+        int idLevel = Application.loadedLevel;
+        idLevel++;
+        if (idLevel < Application.levelCount)
+            Application.LoadLevel(idLevel);
+        else
+            Application.LoadLevel("Menu");
     }
 
     public void OnExitClick()
     {
+        Time.timeScale = 1;
         Application.LoadLevel("Menu");
     }
 
     public void OnResumeClick()
     {
+        Time.timeScale = 1;
         HidePause();
     }
 

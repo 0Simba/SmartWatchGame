@@ -20,6 +20,7 @@ public class HomeMenu : MonoBehaviour {
     public float step2NbRotation;
     public float step2TimerPerRotation;
     public float step3duration;
+
 	// Use this for initialization
 	void Start () {
         StartCoroutine(IntroRotation());
