@@ -24,6 +24,7 @@ public class GameMenu : MonoBehaviour
     [Header("HUD Params")]
     public GameObject hudPannel;
     public Text hudFPS;
+    public Image collectibleImage;
 
     [Header("Pause Params")]
     public GameObject pPannel;
@@ -38,8 +39,15 @@ public class GameMenu : MonoBehaviour
         Game.OnBallStop += OnBallStop;
         Game.OnWin += OnWin;
         Game.OnLose += OnLose;
+        Level.OnCollectibleTaken += CollectibleTaken;
         StartCoroutine(ShowHudFPS());
     }
+
+    void CollectibleTaken()
+    {
+        StartCoroutine(ColletibleAlpha());
+    }
+
 
     void ShowPannel(string name)
     {
@@ -298,5 +306,25 @@ public class GameMenu : MonoBehaviour
         vReset.GetComponent<Button>().interactable = true;
         vNext.GetComponent<Button>().interactable = true;
         vMenu.interactable = true;
+    }
+
+    IEnumerator ColletibleAlpha()
+    {
+        float timer = 0;
+        CanvasGroup _cGroup = collectibleImage.GetComponent<CanvasGroup>();
+        while (timer < 0.15f)
+        {
+            _cGroup.alpha = Mathf.Lerp(0.0f, 0.5f, timer / 0.15f);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        timer = 0;
+        while (timer < 0.1f)
+        {
+            _cGroup.alpha = Mathf.Lerp(0.5f, 0.0f, timer / 0.15f);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        _cGroup.alpha = 0;
     }
 }
