@@ -12,7 +12,7 @@ public class StartManager : GameSystem {
 
 
     void Start () {
-        walls = GameObject.FindGameObjectsWithTag("Wall");
+        walls = GameObject.FindGameObjectsWithTag("WallMesh");
         finalWallsPosition = new Vector3[walls.Length];
 
 
