@@ -27,6 +27,7 @@ public class LevelMenu : MonoBehaviour {
     private float _refStepUp;
     private float _refStepDown;
 
+    public float appearTime = 1;
     public float spacing = 200;
     public ScrollRect scrollRect;
     public GameObject prefabLevelSelectorButton;
@@ -39,6 +40,11 @@ public class LevelMenu : MonoBehaviour {
         _snapPoint = 0; 
         _tContainer = container.GetComponent<RectTransform>();
         AddButtonLevels();
+    }
+
+    public void Appeareance()
+    {
+        StartCoroutine(AppearAnim());
     }
 
     void AddButtonLevels()
@@ -106,5 +112,18 @@ public class LevelMenu : MonoBehaviour {
     {
         string name = levels[_currIndex].levelName;
         Application.LoadLevel(name);
+    }
+
+    IEnumerator AppearAnim()
+    {
+        float _timer = 0;
+        RectTransform _rec = transform.GetComponent<RectTransform>();
+        while (_timer < appearTime)
+        {
+            _rec.localPosition = Vector3.Lerp(new Vector3(0, 320, 0), new Vector3(0, 0, 0), _timer/ appearTime);
+            _timer += Time.deltaTime;
+            yield return null;
+        }
+        _rec.localPosition = new Vector3(0, 0, 0);
     }
 }

@@ -34,7 +34,7 @@ public class HomeMenu : MonoBehaviour {
     public void OnPlayClick()
     {
         bPannelSelectLevel.gameObject.SetActive(true);
-        bPannelMenu.gameObject.SetActive(false);
+        bPannelSelectLevel.GetComponent<LevelMenu>().Appeareance();
     }
 
     public void OnExitClick ()
@@ -55,16 +55,16 @@ public class HomeMenu : MonoBehaviour {
         RectTransform _pannelRect = bPannelMenu.GetComponent<RectTransform>();
         RectTransform _bOptionRect = bOption.GetComponent<RectTransform>();
 
-        Text _playText = bPlay.GetChild(0).GetComponent<Text>();
-        Text _ExitText = bExit.GetChild(0).GetComponent<Text>();
-        Text _OptionText = bOption.GetChild(0).GetComponent<Text>();
-
-        _playText.enabled = false;
         bPlay.GetComponent<Button>().interactable = false;
-        _ExitText.enabled = false;
         bExit.GetComponent<Button>().interactable = false;
-        _OptionText.enabled = false;
         bOption.GetComponent<Button>().interactable = false;
+
+        Image pImage = bPlay.GetChild(0).GetComponentInChildren<Image>();
+        Image eImage = bExit.GetChild(0).GetComponentInChildren<Image>();
+        Image oImage = bOption.GetChild(0).GetComponentInChildren<Image>();
+
+        pImage.fillAmount = 0.0f;
+        eImage.fillAmount = 0.0f;
 
         _bOptionRect.localScale = new Vector3(0, 0, 0);
 
@@ -92,6 +92,8 @@ public class HomeMenu : MonoBehaviour {
         timer = 0;
         while (timer < step3duration)
         {
+            pImage.fillAmount = Mathf.Lerp(0, 1, timer / step3duration);
+            eImage.fillAmount = Mathf.Lerp(0, 1, timer / step3duration);
             _bOptionRect.localScale = Vector3.Lerp(new Vector3(0, 0, 0), new Vector3(1, 1, 1), timer / step3duration);
             timer += Time.deltaTime;
             yield return null;
@@ -99,11 +101,8 @@ public class HomeMenu : MonoBehaviour {
 
         // END ANIMATION
 
-        _playText.enabled = true;
         bPlay.GetComponent<Button>().interactable = true;
-        _ExitText.enabled = true;
         bExit.GetComponent<Button>().interactable = true;
-        _OptionText.enabled = true;
         bOption.GetComponent<Button>().interactable = true;
     }
 }
