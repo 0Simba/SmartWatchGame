@@ -14,7 +14,9 @@ public class GameMenu : MonoBehaviour
     public Text spShootRecapAct;
     public Text spShootRecapTot;
     public Text spCollectiblesAct;
-    public float spShowDuration;
+    public float recapFadeDuration              = 0.2f;
+    public float showCollectiblesPickedDuration = 0.5f;
+    public float showRestThrowDuration          = 0.5f;
 
     [Header("Victory Params")]
     public GameObject vPannel;
@@ -112,13 +114,11 @@ public class GameMenu : MonoBehaviour
     void OnBallStop()
     {
         Game.instance.OnPause();
-        Time.timeScale = 0;
         StartCoroutine(ShowRecapShoot());
     }
 
     void NextMove()
     {
-        Time.timeScale = 1;
         Game.instance.NewMovement();
     }
 
@@ -267,18 +267,16 @@ public class GameMenu : MonoBehaviour
     IEnumerator ShowRecapShoot()
     {
         ShowPannel("ShootRecap");
-        float timeFade = spShowDuration * 0.2f;
-        float timeAppeareance = spShowDuration - (spShowDuration * 0.4f);
         float timer = 0;
 
         CanvasGroup iRecapShoot = spPannel.GetComponent<CanvasGroup>();
         spShootRecapTot.text = Level.instance.maxThrow.ToString();
         spShootRecapAct.text = _oldShootValue.ToString();
 
-        while (timer <= timeFade)
+        while (timer <= recapFadeDuration)
         {
-            iRecapShoot.alpha = Mathf.Lerp(0, 1, timer / timeFade);
-            timer += Time.unscaledDeltaTime;
+            iRecapShoot.alpha = Mathf.Lerp(0, 1, timer / recapFadeDuration);
+            timer += Time.deltaTime;
             yield return null;
         }
 
@@ -287,11 +285,21 @@ public class GameMenu : MonoBehaviour
         int actThrow = Level.instance.restThrow-1;
         float collPicked = (float)Level.instance.collectiblePicked;
 
-        while (timer <= timeAppeareance)
+        while (timer <= showCollectiblesPickedDuration)
         {
-            spShootRecapAct.text = Mathf.Round(Mathf.Lerp(_oldShootValue, actThrow, timer / timeAppeareance * 0.5f)).ToString();
-            spCollectiblesAct.text = Mathf.Round(Mathf.Lerp(_oldCollValue, collPicked, timer / timeAppeareance*0.8f)).ToString();
-            timer += Time.unscaledDeltaTime;
+            spCollectiblesAct.text = Mathf.Round(Mathf.Lerp(_oldCollValue, collPicked, timer / showCollectiblesPickedDuration * 0.8f)).ToString();
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        timer = 0;
+        bool restThrowUpdatedDuration = false;
+        while (timer <= showRestThrowDuration) {
+            if (!restThrowUpdatedDuration && timer >= showRestThrowDuration / 2) {
+                spShootRecapAct.text = actThrow.ToString();
+            }
+
+            timer += Time.deltaTime;
             yield return null;
         }
 
@@ -299,10 +307,10 @@ public class GameMenu : MonoBehaviour
         _oldShootValue = actThrow;
 
         timer = 0;
-        while (timer <= timeFade)
+        while (timer <= recapFadeDuration)
         {
-            iRecapShoot.alpha = Mathf.Lerp(1, 0, timer / timeFade);
-            timer += Time.unscaledDeltaTime;
+            iRecapShoot.alpha = Mathf.Lerp(1, 0, timer / recapFadeDuration);
+            timer += Time.deltaTime;
             yield return null;
         }
         ShowPannel("HUD");
