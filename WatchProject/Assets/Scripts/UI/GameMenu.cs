@@ -7,7 +7,6 @@ public class GameMenu : MonoBehaviour
     private Game.State _prevState;
     private float _oldCollValue;
     private int _oldShootValue;
-    private bool _isSkipped;
     private Camera _cam;
 
     [Header("spShootRecap Params")]
@@ -112,7 +111,6 @@ public class GameMenu : MonoBehaviour
 
     void OnBallStop()
     {
-        _isSkipped = false;
         Game.instance.OnPause();
         Time.timeScale = 0;
         StartCoroutine(ShowRecapShoot());
@@ -120,9 +118,8 @@ public class GameMenu : MonoBehaviour
 
     void NextMove()
     {
-        if(_isSkipped == false)
-            Time.timeScale = 1;
-            Game.instance.NewMovement();
+        Time.timeScale = 1;
+        Game.instance.NewMovement();
     }
 
     void ShowHUD()
@@ -147,7 +144,6 @@ public class GameMenu : MonoBehaviour
         StopCoroutine(ShowRecapShoot());
         ShowPannel("HUD");
         NextMove();
-        _isSkipped = true;
     }
 
     void HidePause()
@@ -288,7 +284,7 @@ public class GameMenu : MonoBehaviour
 
         timer = 0;
 
-        int actThrow = Level.instance.restThrow;
+        int actThrow = Level.instance.restThrow-1;
         float collPicked = (float)Level.instance.collectiblePicked;
 
         while (timer <= timeAppeareance)
@@ -337,7 +333,7 @@ public class GameMenu : MonoBehaviour
         while (timer < timer2 || victory)
         {
             if (victory)
-                vScore.text = Mathf.Round(Mathf.Lerp(0, Level.instance.collectiblePicked * Level.instance.restThrow * 10, (timer / timer2 * 0.7f))).ToString();
+                vScore.text = Mathf.Round(Mathf.Lerp(0, _oldCollValue * _oldShootValue * 10, (timer / timer2 * 0.7f))).ToString();
 
             yield return null;
         }
