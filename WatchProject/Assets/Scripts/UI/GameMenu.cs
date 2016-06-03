@@ -5,13 +5,15 @@ using System.Collections;
 public class GameMenu : MonoBehaviour
 {
     private Game.State _prevState;
-    private float _oldFillValue;
+    private float _oldCollValue;
+    private int _oldShootValue;
     private Camera _cam;
 
     [Header("spShootRecap Params")]
     public GameObject spPannel;
-    public Text spShootRecap;
-    public Image spCollectibles;
+    public Text spShootRecapAct;
+    public Text spShootRecapTot;
+    public Text spCollectiblesAct;
     public float spShowDuration;
 
     [Header("Victory Params")]
@@ -36,12 +38,13 @@ public class GameMenu : MonoBehaviour
 
     void Start()
     {
-        _oldFillValue = 0;
         _cam = Camera.main;
         Game.OnBallStop          += OnBallStop;
         Game.OnWin               += OnWin;
         Game.OnLose              += OnLose;
         Level.OnCollectibleTaken += CollectibleTaken;
+        _oldShootValue = Level.instance.maxThrow;
+        _oldCollValue = 0;
         StartCoroutine(ShowHudFPS());
     }
 
@@ -172,7 +175,6 @@ public class GameMenu : MonoBehaviour
 
     public void OnNextLevel()
     {
-        Debug.Log("OnNextLevel");
         Time.timeScale = 1;
         int idLevel = Application.loadedLevel;
         idLevel++;
@@ -261,13 +263,13 @@ public class GameMenu : MonoBehaviour
     IEnumerator ShowRecapShoot()
     {
         ShowPannel("ShootRecap");
-        spShootRecap.text = Level.instance.restThrow.ToString() + " / " + Level.instance.maxThrow.ToString();
-        spCollectibles.fillAmount = 0.0f;
-
         float timeFade = spShowDuration * 0.2f;
         float timeAppeareance = spShowDuration - (spShowDuration * 0.4f);
         float timer = 0;
+
         CanvasGroup iRecapShoot = spPannel.GetComponent<CanvasGroup>();
+        spShootRecapTot.text = Level.instance.maxThrow.ToString();
+        spShootRecapAct.text = _oldShootValue.ToString();
 
         while (timer <= timeFade)
         {
@@ -277,14 +279,21 @@ public class GameMenu : MonoBehaviour
         }
 
         timer = 0;
-        float fill = (float)Level.instance.collectiblePicked / (float)Level.instance.maxCollectible;
+
+        int actThrow = Level.instance.restThrow;
+        float collPicked = (float)Level.instance.collectiblePicked;
+
         while (timer <= timeAppeareance)
         {
-            spCollectibles.fillAmount = Mathf.Lerp(_oldFillValue, fill, timer/ (timeAppeareance*0.5f) );
+            spShootRecapAct.text = Mathf.Round(Mathf.Lerp(_oldShootValue, actThrow, timer / timeAppeareance * 0.3f)).ToString();
+            spCollectiblesAct.text = Mathf.Round(Mathf.Lerp(_oldCollValue, collPicked, timer / timeAppeareance*0.8f)).ToString();
             timer += Time.unscaledDeltaTime;
             yield return null;
         }
-        _oldFillValue = fill;
+
+        _oldCollValue = collPicked;
+        _oldShootValue = actThrow;
+
         timer = 0;
         while (timer <= timeFade)
         {
