@@ -7,6 +7,7 @@ public class GameMenu : MonoBehaviour
     private Game.State _prevState;
     private float _oldCollValue;
     private int _oldShootValue;
+    private bool _isSkipped;
     private Camera _cam;
 
     [Header("spShootRecap Params")]
@@ -18,6 +19,8 @@ public class GameMenu : MonoBehaviour
 
     [Header("Victory Params")]
     public GameObject vPannel;
+    public GameObject vScorePannel;
+    public Text vScore;
     public Text vText;
     public GameObject vReset;
     public GameObject vNext;
@@ -88,15 +91,17 @@ public class GameMenu : MonoBehaviour
     void OnWin()
     {
         vText.text = "YOU WIN !";
+        vScorePannel.SetActive(true);
         vNext.SetActive(true);
-        StartCoroutine(VictoryScreenAnimation());
+        StartCoroutine(VictoryScreenAnimation(true));
     }
 
     void OnLose()
     {
-        vText.text = "YOU LOSE !";
+        vText.text = "LOSE !";
+        vScorePannel.SetActive(false);
         vReset.SetActive(true);
-        StartCoroutine(VictoryScreenAnimation());
+        StartCoroutine(VictoryScreenAnimation(false));
     }
 
     void Update()
@@ -107,6 +112,7 @@ public class GameMenu : MonoBehaviour
 
     void OnBallStop()
     {
+        _isSkipped = false;
         Game.instance.OnPause();
         Time.timeScale = 0;
         StartCoroutine(ShowRecapShoot());
@@ -114,8 +120,9 @@ public class GameMenu : MonoBehaviour
 
     void NextMove()
     {
-        Time.timeScale = 1;
-        Game.instance.NewMovement();
+        if(_isSkipped == false)
+            Time.timeScale = 1;
+            Game.instance.NewMovement();
     }
 
     void ShowHUD()
@@ -140,6 +147,7 @@ public class GameMenu : MonoBehaviour
         StopCoroutine(ShowRecapShoot());
         ShowPannel("HUD");
         NextMove();
+        _isSkipped = true;
     }
 
     void HidePause()
@@ -285,7 +293,7 @@ public class GameMenu : MonoBehaviour
 
         while (timer <= timeAppeareance)
         {
-            spShootRecapAct.text = Mathf.Round(Mathf.Lerp(_oldShootValue, actThrow, timer / timeAppeareance * 0.3f)).ToString();
+            spShootRecapAct.text = Mathf.Round(Mathf.Lerp(_oldShootValue, actThrow, timer / timeAppeareance * 0.5f)).ToString();
             spCollectiblesAct.text = Mathf.Round(Mathf.Lerp(_oldCollValue, collPicked, timer / timeAppeareance*0.8f)).ToString();
             timer += Time.unscaledDeltaTime;
             yield return null;
@@ -306,7 +314,7 @@ public class GameMenu : MonoBehaviour
     }
 
     // ANIMATION ON VICTORY APPEAR
-    IEnumerator VictoryScreenAnimation()
+    IEnumerator VictoryScreenAnimation(bool victory)
     {
         float timer = 0;
         ShowPannel("Victory");
@@ -314,12 +322,26 @@ public class GameMenu : MonoBehaviour
         vReset.GetComponent<Button>().interactable = false;
         vNext.GetComponent<Button>().interactable = false;
         vMenu.interactable = false;
-        while (timer < vAppearDuration)
+
+        float timer1 = vAppearDuration * 0.4f;
+        float timer2 = vAppearDuration * 0.6f;
+        while (timer < timer1)
         {
             timer += Time.deltaTime;
-            _rectVictory.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, timer / vAppearDuration);
+            _rectVictory.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, timer / timer1);
             yield return null;
         }
+
+        _rectVictory.localScale = Vector3.one;
+        timer = 0;
+        while (timer < timer2 || victory)
+        {
+            if (victory)
+                vScore.text = Mathf.Round(Mathf.Lerp(0, Level.instance.collectiblePicked * Level.instance.restThrow * 10, (timer / timer2 * 0.7f))).ToString();
+
+            yield return null;
+        }
+
         vReset.GetComponent<Button>().interactable = true;
         vNext.GetComponent<Button>().interactable = true;
         vMenu.interactable = true;
@@ -335,7 +357,6 @@ public class GameMenu : MonoBehaviour
         RectTransform _rec = collectibleImage.GetComponent<RectTransform>();
         Vector3 position = _cam.WorldToViewportPoint(posObject);
         position = new Vector3(position.x, position.y, 0);
-        Debug.Log(position);
         _rec.localScale = Vector3.one;
         //_cGroup.alpha = 0;
         _rec.localPosition = position;
