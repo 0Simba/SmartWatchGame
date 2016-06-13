@@ -285,7 +285,7 @@ public class GameMenu : MonoBehaviour
 
         timer = 0;
 
-        int actThrow = Level.instance.restThrow-1;
+        int actThrow = Level.instance.restThrow;
         float collPicked = (float)Level.instance.collectiblePicked;
 
         while (timer <= showCollectiblesPickedDuration)
@@ -340,8 +340,6 @@ public class GameMenu : MonoBehaviour
         {
             timer += Time.deltaTime;
             float ratio = Mathf.Min(1, timer / timer1);
-
-            //_rectVictory.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, ratio);
             _canvasVictory.alpha = ratio;
             yield return null;
         }
@@ -352,7 +350,6 @@ public class GameMenu : MonoBehaviour
         {
             while (timer < timer2)
             {
-                Debug.Log(_oldCollValue * _oldShootValue * 10);
                 vScore.text = Mathf.Round(Mathf.Lerp(0, _oldCollValue * _oldShootValue * 10, (timer / timer2 * 0.7f))).ToString();
                 timer += Time.deltaTime;
                 yield return null;
@@ -370,6 +367,9 @@ public class GameMenu : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
+        vReset.transform.rotation = Quaternion.Euler(Vector3.zero);
+        vNext.transform.rotation = Quaternion.Euler(Vector3.zero);
+        vHome.transform.rotation = Quaternion.Euler(Vector3.zero);
 
         vReset.GetComponent<Button>().interactable = true;
         vNext.GetComponent<Button>().interactable = true;
@@ -387,19 +387,16 @@ public class GameMenu : MonoBehaviour
         Vector3 position = _cam.WorldToViewportPoint(posObject);
         position = new Vector3(position.x, position.y, 0);
         _rec.localScale = Vector3.one;
-        //_cGroup.alpha = 0;
         _rec.localPosition = position;
         float time = 0.5f;
         while (timer < time)
         {
             _rec.localPosition = Vector3.Slerp(position, new Vector3(160, -160, 0), timer / time);
             _rec.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, timer / time);
-            //_cGroup.alpha = Mathf.Lerp(1.0f, 0f, timer / time);
             timer += Time.deltaTime;
             yield return null;
         }
         _rec.localPosition = new Vector3(160, -160, 0);
         timer = 0;
-        //_cGroup.alpha = 0;
     }
 }
