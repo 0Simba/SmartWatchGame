@@ -117,7 +117,7 @@ public class GameMenu : MonoBehaviour
     void OnBallStop()
     {
         Game.instance.OnPause();
-        StartCoroutine(ShowRecapShoot());
+        StartCoroutine("ShowRecapShoot");
     }
 
     void NextMove()
@@ -144,7 +144,7 @@ public class GameMenu : MonoBehaviour
 
     public void SkipRecapScreen()
     {
-        StopCoroutine(ShowRecapShoot());
+        StopCoroutine("ShowRecapShoot");
         ShowPannel("HUD");
         NextMove();
     }
@@ -346,25 +346,28 @@ public class GameMenu : MonoBehaviour
             yield return null;
         }
 
-        timer = 0;
-        while (timer < vButtonRotationDuration) {
-            float ratio = Mathf.Min(1, timer / vButtonRotationDuration);
-            vReset.transform.rotation = Quaternion.Euler(Vector3.Lerp(Vector3.forward * 90 , Vector3.zero, ratio));
-            vNext.transform.rotation  = Quaternion.Euler(Vector3.Lerp(Vector3.forward * 90,  Vector3.zero, ratio));
-            vHome.transform.rotation  = Quaternion.Euler(Vector3.Lerp(Vector3.forward * -90, Vector3.zero, ratio));
-
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-
         _rectVictory.localScale = Vector3.one;
         timer = 0;
-        while (timer < timer2 || victory)
+        if (victory)
         {
-            if (victory)
+            while (timer < timer2)
+            {
+                Debug.Log(_oldCollValue * _oldShootValue * 10);
                 vScore.text = Mathf.Round(Mathf.Lerp(0, _oldCollValue * _oldShootValue * 10, (timer / timer2 * 0.7f))).ToString();
+                timer += Time.deltaTime;
+                yield return null;
+            }
+        }
 
+        timer = 0;
+        while (timer < vButtonRotationDuration)
+        {
+            float ratio = Mathf.Min(1, timer / vButtonRotationDuration);
+            vReset.transform.rotation = Quaternion.Euler(Vector3.Lerp(Vector3.forward * 90, Vector3.zero, ratio));
+            vNext.transform.rotation = Quaternion.Euler(Vector3.Lerp(Vector3.forward * 90, Vector3.zero, ratio));
+            vHome.transform.rotation = Quaternion.Euler(Vector3.Lerp(Vector3.forward * -90, Vector3.zero, ratio));
+
+            timer += Time.deltaTime;
             yield return null;
         }
 
