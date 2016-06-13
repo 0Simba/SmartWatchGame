@@ -294,6 +294,7 @@ public class GameMenu : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
+        spCollectiblesAct.text = collPicked.ToString();
 
         timer = 0;
         bool restThrowUpdatedDuration = false;
@@ -305,7 +306,7 @@ public class GameMenu : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
-
+        spShootRecapAct.text = actThrow.ToString();
         _oldCollValue = collPicked;
         _oldShootValue = actThrow;
 
@@ -316,6 +317,8 @@ public class GameMenu : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
+        iRecapShoot.alpha = 0;
+
         ShowPannel("HUD");
         NextMove();
     }
@@ -343,19 +346,22 @@ public class GameMenu : MonoBehaviour
             _canvasVictory.alpha = ratio;
             yield return null;
         }
-
+        _canvasVictory.alpha = 1;
         _rectVictory.localScale = Vector3.one;
+
+
         timer = 0;
+        float mScore = _oldCollValue * _oldShootValue * 10;
         if (victory)
         {
             while (timer < timer2)
             {
-                vScore.text = Mathf.Round(Mathf.Lerp(0, _oldCollValue * _oldShootValue * 10, (timer / timer2 * 0.7f))).ToString();
+                vScore.text = Mathf.Round(Mathf.Lerp(0, mScore, (timer / timer2 * 0.7f))).ToString();
                 timer += Time.deltaTime;
                 yield return null;
             }
         }
-
+        vScore.text = mScore.ToString();
         timer = 0;
         while (timer < vButtonRotationDuration)
         {
@@ -367,12 +373,15 @@ public class GameMenu : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
+
         vReset.transform.rotation = Quaternion.Euler(Vector3.zero);
         vNext.transform.rotation = Quaternion.Euler(Vector3.zero);
         vHome.transform.rotation = Quaternion.Euler(Vector3.zero);
 
         vReset.GetComponent<Button>().interactable = true;
+        vHome.GetComponent<Button>().interactable = true;
         vNext.GetComponent<Button>().interactable = true;
+
         vMenu.interactable = true;
     }
 
