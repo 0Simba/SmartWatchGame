@@ -50,7 +50,7 @@ public class GameMenu : MonoBehaviour
         Game.OnLose              += OnLose;
         Level.OnCollectibleTaken += CollectibleTaken;
         _oldShootValue = Level.instance.maxThrow;
-        _oldCollValue = 0;
+        _oldCollValue = 1;
         StartCoroutine(ShowHudFPS());
     }
 
@@ -193,13 +193,13 @@ public class GameMenu : MonoBehaviour
 
     public void OnExitClick()
     {
-        Debug.Log("OnExitClick");
         Time.timeScale = 1;
         Application.LoadLevel("Menu");
     }
 
     public void OnResumeClick()
     {
+        Debug.Log("OnResumeClick");
         Time.timeScale = 1;
         HidePause();
     }
@@ -307,8 +307,8 @@ public class GameMenu : MonoBehaviour
             yield return null;
         }
         spShootRecapAct.text = actThrow.ToString();
-        _oldCollValue = collPicked;
-        _oldShootValue = actThrow;
+        _oldCollValue = Mathf.Max(collPicked, 1);
+        _oldShootValue = Mathf.Max(actThrow, 1);
 
         timer = 0;
         while (timer <= recapFadeDuration)
@@ -330,9 +330,13 @@ public class GameMenu : MonoBehaviour
         ShowPannel("Victory");
         RectTransform _rectVictory   = vPannel.GetComponent<RectTransform>();
         CanvasGroup   _canvasVictory = vPannel.GetComponent<CanvasGroup>();
+
         vReset.GetComponent<Button>().interactable = false;
+        vHome.GetComponent<Button>().interactable = false;
         vNext.GetComponent<Button>().interactable = false;
+
         vMenu.interactable = false;
+
         vReset.transform.rotation = Quaternion.Euler(Vector3.forward * 90);
         vNext.transform.rotation  = Quaternion.Euler(Vector3.forward * 90);
         vHome.transform.rotation  = Quaternion.Euler(Vector3.forward * -90);
@@ -378,11 +382,10 @@ public class GameMenu : MonoBehaviour
         vNext.transform.rotation = Quaternion.Euler(Vector3.zero);
         vHome.transform.rotation = Quaternion.Euler(Vector3.zero);
 
+        vMenu.interactable = true;
         vReset.GetComponent<Button>().interactable = true;
         vHome.GetComponent<Button>().interactable = true;
         vNext.GetComponent<Button>().interactable = true;
-
-        vMenu.interactable = true;
     }
 
     IEnumerator ColletibleAlpha (Vector3 posObject) {
